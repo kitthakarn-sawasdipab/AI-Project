@@ -1,7 +1,7 @@
 import streamlit as st
 
 from src import config, monitor
-from src.predict import HARD_LIMITS, load_artifacts, predict_one, validate_inputs
+from src.predict import HARD_LIMITS, LABELS, load_artifacts, predict_one, validate_inputs
 
 st.set_page_config(page_title="Building Energy Predictor", page_icon="⚡")
 
@@ -32,25 +32,32 @@ predict_tab, monitor_tab = st.tabs(["Predict", "Monitoring"])
 with predict_tab:
     ranges = meta["numeric_ranges"]
     inputs = {}
-    col1, col2 = st.columns(2)
-    with col1:
-        lo, hi = HARD_LIMITS["floor_area_m2"]
-        inputs["floor_area_m2"] = st.number_input(
-            "Floor area (m²)", min_value=lo, max_value=hi,
-            value=float(round(sum(ranges["floor_area_m2"]) / 2)), step=100.0,
-            help=f"Training range: {ranges['floor_area_m2'][0]:.0f}–{ranges['floor_area_m2'][1]:.0f} m²",
-        )
-        inputs["building_type"] = st.selectbox("Building type", meta["categories"]["building_type"])
-    with col2:
-        lo, hi = HARD_LIMITS["air_temp_c"]
-        inputs["air_temp_c"] = st.number_input(
-            "Outdoor temperature (°C)", min_value=lo, max_value=hi,
-            value=float(round(sum(ranges["air_temp_c"]) / 2, 1)), step=0.5,
-            help=f"Training range: {ranges['air_temp_c'][0]:.1f}–{ranges['air_temp_c'][1]:.1f} °C",
-        )
-        inputs["day_of_week"] = st.selectbox("Day of week", meta["categories"]["day_of_week"])
+    # A form sends all values together when Predict is pressed, so a typed but unconfirmed
+    # value is never replaced by an older one. The widgets have no min/max on purpose:
+    # every value reaches validate_inputs, which gives a clear error message.
+    with st.form("predict_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            lo, hi = HARD_LIMITS["floor_area_m2"]
+            inputs["floor_area_m2"] = st.number_input(
+                "Floor area (m²)",
+                value=float(round(sum(ranges["floor_area_m2"]) / 2)), step=100.0,
+                help=f"Allowed: {lo:,.0f}–{hi:,.0f} m². "
+                     f"Training range: {ranges['floor_area_m2'][0]:.0f}–{ranges['floor_area_m2'][1]:.0f} m².",
+            )
+            inputs["building_type"] = st.selectbox("Building type", meta["categories"]["building_type"])
+        with col2:
+            lo, hi = HARD_LIMITS["air_temp_c"]
+            inputs["air_temp_c"] = st.number_input(
+                "Outdoor temperature (°C)",
+                value=float(round(sum(ranges["air_temp_c"]) / 2, 1)), step=0.5,
+                help=f"Allowed: {lo:g} to {hi:g} °C. "
+                     f"Training range: {ranges['air_temp_c'][0]:.1f}–{ranges['air_temp_c'][1]:.1f} °C.",
+            )
+            inputs["day_of_week"] = st.selectbox("Day of week", meta["categories"]["day_of_week"])
+        submitted = st.form_submit_button("Predict", type="primary")
 
-    if st.button("Predict", type="primary"):
+    if submitted:
         errors, out_of_range = validate_inputs(inputs, meta)
         if errors:
             for e in errors:
@@ -61,7 +68,7 @@ with predict_tab:
             if out_of_range:
                 st.warning(
                     "These inputs are outside the range seen during training, so the "
-                    f"prediction is less reliable: {', '.join(out_of_range)}."
+                    f"prediction is less reliable: {', '.join(LABELS[c] for c in out_of_range)}."
                 )
             monitor.log_prediction(inputs, pred, out_of_range)
 

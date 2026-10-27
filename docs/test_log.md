@@ -26,7 +26,7 @@ The dashboard rounds to whole kWh, so differences below 0.5 are rounding only.
 | 5 | Invalid | temp = 99 °C | Error: must be between −40 and 55 | Rejected by `validate_inputs` with that message | Pass (unit level) |
 | 6 | Invalid | building type not in training data | Error listing allowed types | Rejected with the list of 16 valid types | Pass (unit level) |
 | 7 | Invalid | missing area | Error: area is required | Rejected: "floor_area_m2 is required" | Pass (unit level) |
-| 8 | Invalid | area = 0 and temp = 99 typed into the deployed form | Browser form refuses the value, or the app shows an error | See section D: both fields turn red and refuse the value; **but Predict stays clickable and silently uses the last accepted values** | Pass with a weakness (see D) |
+| 8 | Invalid | area = 0 and temp = 99 typed into the form | Browser form refuses the value, or the app shows an error | Original version: fields turned red but Predict silently used old values (section D). After the form fix the app shows a clear error and no prediction (section D-fix) | Pass after fix (deployed link to be re-checked) |
 
 Rows 4–7 test the validation function directly. Row 8 was checked in a browser on the deployed app (section D).
 
@@ -44,10 +44,21 @@ App: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/ · Date: 2026-10-2
 | D4 | Temperature = 99 °C | Refused | Same red field and no accepted value | Pass |
 | D5 | Monitoring tab | Shows number of predictions and out-of-range share | Showed 5 predictions logged and 20% out-of-range | Pass |
 
-**Observations and weaknesses found**
-1. **Entering a value needs Enter or leaving the field.** A number typed but not confirmed is not sent to the app; the first attempt (value typed, Predict clicked at once) returned 25,557 kWh/day for the default 40,662 m² instead of the typed value. This is normal Streamlit behaviour, but a user can mistake it for a wrong answer.
-2. **Invalid text does not block Predict.** After D3/D4 the Predict button still works and the app uses the last accepted values, so a user who types 0 m² and presses Predict gets a result for the old inputs without any message. Worth fixing before the demonstration (for example by putting the inputs in `st.form` and checking again, or by showing a message), and worth explaining honestly if it is left as is.
+**Observations and weaknesses found (D1–D5 above were run on the version before the fix below)**
+1. **Entering a value needed Enter or leaving the field.** A number typed but not confirmed was not sent to the app; the first attempt (value typed, Predict clicked at once) returned 25,557 kWh/day for the default 40,662 m² instead of the typed value.
+2. **Invalid text did not block Predict.** After D3/D4 the Predict button still worked and the app used the last accepted values, so a user who typed 0 m² and pressed Predict got a result for the old inputs without any message.
 3. The forest cannot extrapolate: 1,000,000 m² returns only 28,109 kWh/day, much too low for such a building. The out-of-range warning is therefore justified, and the prediction should not be trusted.
+
+### D-fix. Re-test after moving the inputs into a form (local server, real model, browser)
+Change: the inputs are now inside `st.form` and the widgets have no min/max, so every value reaches `validate_inputs` when Predict is pressed. Run on a local server on 2026-10-27; **the deployed app shows the fix only after the commit is pushed and Streamlit redeploys. Re-check D-fix on the live link afterwards.**
+
+| # | Input (Predict pressed straight after typing, no Enter) | Expected | Actual | Pass? |
+|---|---|---|---|---|
+| F1 | 5292.6 m², 16.6 °C, Education, Friday | 2,112 kWh/day | **2,112 kWh/day** (before the fix this gave the old default's result) | Pass |
+| F2 | Floor area = 0 | Clear error, no prediction | "Floor area (m²) must be a number between 1 and 1,000,000", no result shown | Pass |
+| F3 | Temperature = 99 | Clear error, no prediction | "Outdoor temperature (°C) must be a number between -40 and 55", no old result left on screen | Pass |
+
+Automated: 18 `pytest` tests pass, including `tests/test_app.py`, which drives the app form with valid, out-of-range and invalid inputs (zero, negative area; temperature 99 and −80) and checks that invalid inputs are not logged.
 
 ## C. Monitoring observations
 | Date | Predictions logged | Out-of-range share | Observation / action |

@@ -183,7 +183,7 @@ Permutation importance on 5,000 test rows (increase in RMSE when a feature is sh
 Python code in `src/`: `build_dataset.py` (data), `train.py` (training and comparison), `predict.py` (validation and prediction), `monitor.py` (logging). The trained Pipeline (preprocessing plus model) is saved with `joblib` in `models/model.joblib` together with `metadata.json` (feature order, training ranges, categories, results). The dashboard loads the same Pipeline, so the transformations and the feature order are identical to training. Dependencies are in `requirements.txt` and seeds in `src/config.py`.
 
 ### 5.2 Dashboard
-The Streamlit app has a title, short instructions, number inputs for floor area and temperature, drop-downs for building type and day, a Predict button and a result labelled in kWh/day. **[GROUP: insert screenshots of the Predict tab, an out-of-range warning and the Monitoring tab.]**
+The Streamlit app has a title, short instructions, a form with number inputs for floor area and temperature and drop-downs for building type and day, a Predict button and a result labelled in kWh/day. **[GROUP: insert screenshots of the Predict tab, an out-of-range warning and the Monitoring tab.]**
 
 **Input validation.** Floor area must be 1 to 1,000,000 m² and temperature −40 to 55 °C; building type must be one of the 16 training categories; empty values are rejected. Values inside the hard limits but outside the range seen in training (floor area 34 to 81,290 m²; temperature −24.8 to 40.5 °C) are accepted with a warning that the prediction is less reliable.
 
@@ -194,8 +194,8 @@ The app is deployed from the GitHub repository on Streamlit Community Cloud: htt
 Full log: `docs/test_log.md`.
 - **Dashboard vs notebook:** five test cases entered in the dashboard matched the training script's predictions exactly (for example 2,112 vs 2,112.38 kWh/day), differing only by rounding to whole kWh.
 - **Boundary:** a floor area of 1,000,000 m² was accepted and returned a prediction with the out-of-range warning.
-- **Invalid:** zero floor area, temperature 99 °C, an unknown building type and missing values are rejected by the validation function with a clear message (11 automated `pytest` tests pass).
-- **Not yet verified:** that the browser form itself refuses invalid entries on the deployed app. **[GROUP: test this manually and record it in `docs/test_log.md` row 8.]**
+- **Invalid:** zero floor area, temperature 99 °C, an unknown building type and missing values are rejected by the validation function with a clear message (18 automated `pytest` tests pass, including tests that drive the app form).
+- **Invalid entries in the browser form:** our first deployed version had a weakness. The input boxes refused a zero area or a 99 °C temperature, but the Predict button then silently reused the last accepted values and showed an old result. We fixed this by moving the inputs into a Streamlit form without widget limits, so every value is checked by our own validation and a clear message is shown. Local browser tests of the fix passed. **[GROUP: re-test on the deployed link after pushing the fix and record it in `docs/test_log.md`, section D-fix.]**
 
 ### 5.5 Monitoring
 Each prediction is appended to a log (timestamp, inputs, prediction, list of out-of-range inputs) with no personal data. The Monitoring tab shows the number of predictions and the share of requests with inputs outside the training range. **Review trigger:** more than 20% of requests outside the training range, which would suggest that users' buildings differ from the data and the model needs reviewing or retraining. In our test session 6 predictions were logged and 1 (17%) was out of range, below the trigger. **[GROUP: add observations from the deployed app; note that the free hosting does not keep the log permanently, so keep screenshots.]** New predictions alone do not show real-world accuracy; that needs measured energy use to compare against.

@@ -4,17 +4,7 @@ import pandas as pd
 import pytest
 
 from src import config, make_demo_data, train
-from src.predict import load_artifacts, predict_one, validate_inputs
-
-
-@pytest.fixture(scope="module")
-def artifacts(tmp_path_factory):
-    tmp = tmp_path_factory.mktemp("run")
-    data = tmp / "demo.csv"
-    make_demo_data.make(n_buildings=15, days=60).to_csv(data, index=False)
-    train.main(data, tmp / "models")
-    model, meta = load_artifacts(tmp / "models")
-    return model, meta, tmp / "models"
+from src.predict import predict_one, validate_inputs
 
 
 def valid_case(meta):
