@@ -1,14 +1,23 @@
 # AI-assisted development record
 
-At least five representative prompts covering different stages.
+**Tool used:** Claude Code (Claude Sonnet 5.5), not ChatGPT. The brief names ChatGPT as an example of allowed coding support;
+**[GROUP: confirm with the lecturer that another AI tool is acceptable and say so in the report.]**
 
-| # | Stage | Prompt (exact text) | What the AI produced | How it was checked, corrected or adapted | By |
-|---|---|---|---|---|---|
-| 1 | Data analysis | TODO | | | |
-| 2 | Preprocessing | TODO | | | |
-| 3 | Modelling | TODO | | | |
-| 4 | Dashboard | TODO | | | |
-| 5 | Testing / deployment | TODO | | | |
+The prompts below are the group member's real messages from the working session, quoted exactly (Thai) with an English gloss.
+The "How it was checked" column lists only what was actually done in that session. Items marked **[GROUP]** need the members' own
+checks and understanding, which cannot be filled in by the AI.
 
-Checks to describe: ran the code, compared with expected values, tested edge cases, read documentation,
-fixed errors or leakage the AI introduced.
+| # | Stage | Prompt (exact text) | What the AI produced | How it was checked, corrected or adapted |
+|---|---|---|---|---|
+| 1 | Understanding the brief | "อ่านไฟล์และสรุปมา ว่าโปรเจ็คนี้ให้ทำอะไรบ้าง" (Read the file and summarise what the project requires) | A Thai summary of tasks, deliverables and the rubric. The built-in PDF reader returned no text, so the AI extracted it with `pdftotext` | **[GROUP: compare the summary with the PDF yourselves.]** The deliverables list and rubric weights were copied from the extracted text |
+| 2 | Case and dataset choice | "เลือกหัวข้อ 4" (Choose case 4) | A plan for case 4 and three dataset candidates (BDG2, ASHRAE GEPIII, UCI Appliances) | The AI said the licence and link were unchecked. It then read the file sizes and licence from the BDG2 repository (CC BY-SA 4.0) before asking permission to download. **[GROUP: read the BDG2 paper and decide on the dataset yourselves.]** |
+| 3 | Project design and code | "เริ่มสร้างโปรเจ็คได้เลย" (Start building the project) | Project layout, `train.py`, `predict.py`, `monitor.py`, `app.py`, tests, document templates | Ran 11 pytest tests and a headless run of the app, using **synthetic** data labelled as not for the report. Fixed a deprecated Streamlit argument. **[GROUP: read every file and be able to explain the preprocessing and the split.]** |
+| 4 | Data preparation and modelling | "ช่วยทำ data set ให้เลย ไม่ต้องรออาจารย์ส่ง data แล้ว" and "อนุญาตให้ดาวน์โหลดทั้ง 3 ไฟล์จาก BDG2 ได้เลย" (Build the dataset; allowed to download the 3 files) | `build_dataset.py` turning hourly wide-format meters into a daily table, then training of baseline, Ridge and random forest on it | Modelling: the first forest scored R² ≈ 0 (it memorised buildings through floor area); a log target and large leaves fixed it, and Ridge with a log target blew up (R² −6.3) until floor area was also log-transformed. The AI printed test results at each attempt, so the test set is not fully untouched (stated in the report draft). Data: the first run crashed (a pandas 3 `groupby.apply` dropped the building column) and was rewritten. The AI looked at the distribution, found many near-zero days, counted them at several thresholds and chose 0.005 kWh/m²/day. **[GROUP: be able to justify this threshold and the 60-days-per-building sample.]** |
+| 5 | Testing the dashboard | "commit ได้เลย แล้วทดสอบแอปกับโมเดลจริงด้วย" (Commit, and test the app with the real model) | A headless test of the app with the real model | Five reference cases matched the notebook. The test tool could not submit out-of-limit values, so the AI said this was **not proven**, tested the validator directly, and later checked the deployed app in a browser (see `test_log.md`, section D) |
+| 6 | Analysis and report | "สร้าง notebook EDA และ error analysis สำหรับรายงาน" and "ร่างรายงานตามโครงใน docs/report_outline.md โดยใช้ตัวเลขจริงจากการเทรน" (Build the EDA / error-analysis notebook; draft the report with real numbers) | `notebooks/analysis.ipynb`, six figures, `results.json`, `docs/report_draft.md` | The notebook re-trains the models and asserts that its RMSE matches `models/metadata.json` and that the saved model reproduces the predictions. The AI cross-checked the draft against `results.json` and corrected four statements (a wrong filter count, a speed ratio, a vague selection sentence and an inaccurate claim that the test set was untouched). **[GROUP: re-check the numbers against `results.json` and rewrite the text in your own words.]** |
+| 7 | Deployment | "ขอขั้นตอน" (Ask for the steps) | Steps for pushing to GitHub and deploying on Streamlit Community Cloud | The group followed the steps and obtained the live app. The AI then opened the deployed app and compared its output with the notebook |
+
+## Notes for the report
+- Checks to describe in your own words: ran the code, compared with expected values, tested edge cases, found and fixed errors the AI introduced.
+- **Weaknesses the AI found in its own work** (useful evidence of checking): the pandas 3 crash, the memorising forest, the unstable Ridge, and the Predict button using old values when an input is invalid.
+- All members should be able to explain these decisions; the demonstration marks code understanding.
