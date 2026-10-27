@@ -19,16 +19,15 @@ def make(n_buildings: int = 40, days: int = 180, seed: int = 0) -> pd.DataFrame:
         for d, date in enumerate(pd.date_range("2024-01-01", periods=days)):
             temp = 25 + 6 * np.sin(2 * np.pi * d / 365) + rng.normal(0, 2)
             weekend = date.dayofweek >= 5
-            holiday = rng.random() < 0.03
             kwh = (
-                area * 0.05 * (0.6 if (weekend or holiday) else 1.0)
+                area * 0.05 * (0.6 if weekend else 1.0)
                 + area * 0.02 * max(temp - 24, 0)
                 + rng.normal(0, area * 0.01)
             )
             rows.append({
                 "building_id": f"b{b:03d}", "date": date, "building_type": btype,
                 "floor_area_m2": round(area, 1), "air_temp_c": round(temp, 1),
-                "day_of_week": date.day_name(), "is_holiday": int(holiday),
+                "day_of_week": date.day_name(),
                 "energy_kwh_day": round(max(kwh, 0), 1),
             })
     df = pd.DataFrame(rows)

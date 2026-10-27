@@ -1,7 +1,7 @@
 # Building Daily Energy Use Prediction (IFJC4002, Case 4)
 
 Predicts a building's daily energy use (kWh/day) from floor area, outdoor temperature,
-building type, day of week and holiday status, and serves the model in a Streamlit dashboard.
+building type and day of week, and serves the model in a Streamlit dashboard.
 
 > Status: scaffold. Real data, final features and results are pending lecturer approval of the dataset.
 > `src/make_demo_data.py` produces **synthetic** data only to check that the code runs.

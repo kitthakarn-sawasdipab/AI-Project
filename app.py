@@ -41,8 +41,6 @@ with predict_tab:
             help=f"Training range: {ranges['floor_area_m2'][0]:.0f}–{ranges['floor_area_m2'][1]:.0f} m²",
         )
         inputs["building_type"] = st.selectbox("Building type", meta["categories"]["building_type"])
-        inputs["is_holiday"] = st.selectbox("Public holiday?", meta["categories"]["is_holiday"],
-                                            format_func=lambda v: "Yes" if v == "1" else "No")
     with col2:
         lo, hi = HARD_LIMITS["air_temp_c"]
         inputs["air_temp_c"] = st.number_input(

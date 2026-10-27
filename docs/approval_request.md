@@ -13,8 +13,8 @@ metadata for many buildings, with weather data. Link and licence: TODO (to be co
 
 **Scope:** electricity meter only, aggregated to one row per building per day.
 - Target: daily energy use (kWh), regression
-- Inputs: floor area, outdoor air temperature, building type, day of week, holiday indicator
-  (occupancy and operating hours are not in the data, so weekday and holiday are used as proxies)
+- Inputs: floor area, outdoor air temperature, building type, day of week
+  (occupancy and operating hours are not in the data, so day of week is used as a proxy)
 - Different from the household electricity example shown in class: it covers many non-residential
   buildings with floor area and weather, not one household's sub-metering.
 

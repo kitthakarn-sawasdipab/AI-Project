@@ -10,7 +10,7 @@ import joblib
 import numpy as np
 import pandas as pd
 import sklearn
-from sklearn.compose import ColumnTransformer
+from sklearn.compose import ColumnTransformer, TransformedTargetRegressor
 from sklearn.dummy import DummyRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.impute import SimpleImputer
@@ -18,7 +18,7 @@ from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GroupKFold, GroupShuffleSplit, TimeSeriesSplit, cross_val_score
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
 from . import config
 
@@ -48,23 +48,37 @@ def split(df: pd.DataFrame):
 def build_preprocessor() -> ColumnTransformer:
     # Fitted on the training data only, because it lives inside the Pipeline.
     numeric = Pipeline([("impute", SimpleImputer(strategy="median")), ("scale", StandardScaler())])
+    logged = Pipeline([
+        ("impute", SimpleImputer(strategy="median")),
+        ("log", FunctionTransformer(np.log1p)),
+        ("scale", StandardScaler()),
+    ])
     categorical = Pipeline([
         ("impute", SimpleImputer(strategy="most_frequent")),
         ("onehot", OneHotEncoder(handle_unknown="ignore")),
     ])
+    plain_numeric = [c for c in config.NUMERIC_FEATURES if c not in config.LOG_FEATURES]
     return ColumnTransformer([
-        ("num", numeric, config.NUMERIC_FEATURES),
+        ("num", numeric, plain_numeric),
+        ("num_log", logged, config.LOG_FEATURES),
         ("cat", categorical, config.CATEGORICAL_FEATURES),
     ])
+
+
+def log_target(model):
+    """Daily energy is heavy-tailed; fit on log1p(kWh) and predict back in kWh."""
+    return TransformedTargetRegressor(regressor=model, func=np.log1p, inverse_func=np.expm1)
 
 
 def candidate_models() -> dict:
     return {
         "Baseline (train mean)": DummyRegressor(strategy="mean"),
-        "Ridge regression": Ridge(alpha=1.0),
-        "Random forest": RandomForestRegressor(
-            n_estimators=200, min_samples_leaf=5, n_jobs=-1, random_state=config.SEED
-        ),
+        "Ridge regression": log_target(Ridge(alpha=1.0)),
+        # Large leaves stop the forest memorising individual buildings via floor area.
+        "Random forest": log_target(RandomForestRegressor(
+            n_estimators=150, min_samples_leaf=100, max_features=0.7,
+            n_jobs=-1, random_state=config.SEED,
+        )),
     }
 
 

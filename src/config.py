@@ -15,7 +15,8 @@ GROUP_COL = "building_id"  # used only for splitting, never as a feature
 DATE_COL = "date"          # used only for chronological splitting
 
 NUMERIC_FEATURES = ["floor_area_m2", "air_temp_c"]
-CATEGORICAL_FEATURES = ["building_type", "day_of_week", "is_holiday"]
+LOG_FEATURES = ["floor_area_m2"]  # heavy-tailed numeric features, log1p-transformed before scaling
+CATEGORICAL_FEATURES =["building_type", "day_of_week"]
 FEATURES = NUMERIC_FEATURES + CATEGORICAL_FEATURES  # fixed feature order
 
 # "group": no building appears in both train and test (predicts unseen buildings)

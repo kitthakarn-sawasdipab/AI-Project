@@ -23,13 +23,12 @@ def valid_case(meta):
         "air_temp_c": 25.0,
         "building_type": meta["categories"]["building_type"][0],
         "day_of_week": meta["categories"]["day_of_week"][0],
-        "is_holiday": "0",
     }
 
 
 def test_reloaded_model_matches_reference_cases(artifacts):
     model, meta, model_dir = artifacts
-    ref = pd.read_csv(model_dir / "reference_cases.csv", dtype={"is_holiday": str})
+    ref = pd.read_csv(model_dir / "reference_cases.csv")
     for _, r in ref.iterrows():
         got = predict_one(model, meta, r[meta["features"]].to_dict())
         assert got == pytest.approx(r["notebook_prediction"], abs=0.01)
