@@ -42,7 +42,7 @@ Pipeline, so the dashboard applies the same transformations and feature order as
 ## Deploy (Streamlit Community Cloud)
 1. Push this folder to a GitHub repository, including `models/` (commit after training).
 2. On share.streamlit.io choose the repository, branch `main`, main file `app.py`.
-3. Add the app link here: TODO
+3. Live app: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/
 4. Give the lecturer access to the repository if it is private.
 
 ## Checking dashboard against notebook
