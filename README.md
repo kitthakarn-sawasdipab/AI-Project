@@ -21,6 +21,8 @@ src/train.py           split, baseline + 2 models, CV, test metrics, saves model
 src/predict.py         input validation and prediction (shared by app and tests)
 src/monitor.py         prediction log and review trigger
 src/make_demo_data.py  synthetic data for smoke tests
+src/build_dataset.py   builds data/processed/daily_energy.csv from the raw BDG2 files
+notebooks/analysis.ipynb  EDA, model comparison and error analysis (writes docs/figures/)
 tests/                 pytest checks (reload agreement, boundary and invalid inputs)
 data/                  see data/README.md
 docs/                   report outline, test log, contribution and prompt records
@@ -35,6 +37,9 @@ pip install -r requirements.txt
 python -m src.train          # prints CV and test metrics, saves models/
 pytest                       # smoke tests (use synthetic data)
 streamlit run app.py
+# optional: re-run the analysis notebook (needs data/raw/ files for the raw-data statistics)
+pip install -r requirements-dev.txt
+jupyter nbconvert --to notebook --execute --inplace notebooks/analysis.ipynb
 ```
 Random seed is `config.SEED` (42). Model and preprocessing are saved together as one scikit-learn
 Pipeline, so the dashboard applies the same transformations and feature order as training.
