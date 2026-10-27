@@ -7,9 +7,11 @@ building type and day of week, and serves the model in a Streamlit dashboard.
 > `src/make_demo_data.py` produces **synthetic** data only to check that the code runs.
 
 ## Group
-| Name | Student ID | Main tasks |
-|---|---|---|
-| TODO | TODO | TODO |
+- Kitthakarn Sawasdipab
+- Narawit Midsalae
+- Arissara Arree
+- Nattawut Kamchoo
+- Phakchira Nunnum
 
 ## Layout
 ```

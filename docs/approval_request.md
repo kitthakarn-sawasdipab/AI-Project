@@ -5,7 +5,7 @@
 
 Dear Dr. Marni,
 
-Our group (members and IDs: TODO) would like to take Case 4, building energy consumption
+Our group (Kitthakarn Sawasdipab, Narawit Midsalae, Arissara Arree, Nattawut Kamchoo, Phakchira Nunnum) would like to take Case 4, building energy consumption
 prediction, and asks for approval of the following dataset and scope.
 
 **Proposed dataset:** Building Data Genome Project 2 (BDG2), public hourly meter readings and
