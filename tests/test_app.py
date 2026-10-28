@@ -4,6 +4,7 @@ import streamlit as st
 from streamlit.testing.v1 import AppTest
 
 from src import config
+from src.predict import LABELS
 
 APP = str(config.ROOT / "app.py")
 
@@ -17,33 +18,41 @@ def app(artifacts, tmp_path, monkeypatch):
     return AppTest.from_file(APP, default_timeout=60).run()
 
 
-def submit(at, area=None, temp=None):
-    if area is not None:
-        at.number_input[0].set_value(area)
-    if temp is not None:
-        at.number_input[1].set_value(temp)
+def submit(at, **values):
+    fields = {w.label: w for w in at.number_input}
+    for name, value in values.items():
+        fields[LABELS[name]].set_value(value)
     return at.button[0].click().run()
 
 
-def test_valid_input_shows_prediction(app):
-    at = submit(app, area=3000.0, temp=20.0)
+def test_default_inputs_show_prediction(app):
+    at = submit(app)
     assert not at.exception and not at.error
     assert "kWh/day" in at.metric[0].value
 
 
-@pytest.mark.parametrize("area,temp", [(0.0, 20.0), (-5.0, 20.0), (3000.0, 99.0), (3000.0, -80.0)])
-def test_invalid_input_shows_error_and_no_prediction(app, area, temp):
-    at = submit(app, area=area, temp=temp)
+def test_typical_building(app):
+    at = submit(app, floor_area_m2=5000.0, planned_occupancy=300.0, operating_hours=10.0)
+    assert not at.error and "kWh/day" in at.metric[0].value
+
+
+@pytest.mark.parametrize("name,value", [
+    ("floor_area_m2", 0.0), ("floor_area_m2", -5.0), ("planned_occupancy", -10.0),
+    ("operating_hours", 30.0), ("outdoor_temperature_c", 99.0), ("outdoor_temperature_c", -80.0),
+    ("cooling_efficiency_cop", 0.2), ("window_to_wall_ratio", 2.0),
+])
+def test_invalid_input_shows_error_and_no_prediction(app, name, value):
+    at = submit(app, **{name: value})
     assert at.error and "must be a number between" in at.error[0].value
     assert not at.metric or "kWh/day" not in at.metric[0].value
 
 
 def test_out_of_range_input_warns(app):
-    at = submit(app, area=900_000.0)
+    at = submit(app, floor_area_m2=50_000.0)
     assert not at.error and at.warning
     assert "kWh/day" in at.metric[0].value
 
 
 def test_invalid_input_is_not_logged(app):
-    submit(app, area=0.0)
+    submit(app, floor_area_m2=0.0)
     assert not config.LOG_PATH.exists()

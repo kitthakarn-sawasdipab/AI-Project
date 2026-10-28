@@ -16,7 +16,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import GroupKFold, GroupShuffleSplit, TimeSeriesSplit, cross_val_score
+from sklearn.model_selection import KFold, cross_val_score, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer, OneHotEncoder, StandardScaler
 
@@ -25,24 +25,18 @@ from . import config
 
 def load_data(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
-    needed = set(config.FEATURES + [config.TARGET, config.GROUP_COL, config.DATE_COL])
+    needed = set(config.FEATURES + [config.TARGET, config.ID_COL])
     missing = needed - set(df.columns)
     if missing:
         raise ValueError(f"Dataset is missing columns: {sorted(missing)}")
-    df = df.dropna(subset=[config.TARGET])
-    df[config.DATE_COL] = pd.to_datetime(df[config.DATE_COL])
-    for col in config.CATEGORICAL_FEATURES:
-        df[col] = df[col].astype(str)
-    return df.sort_values(config.DATE_COL).reset_index(drop=True)
+    df = df.dropna(subset=[config.TARGET])  # the target is never filled
+    df["building_type"] = df["building_type"].astype(str)
+    return df.reset_index(drop=True)
 
 
 def split(df: pd.DataFrame):
-    if config.SPLIT_MODE == "time":
-        cutoff = int(len(df) * (1 - config.TEST_SIZE))
-        return df.iloc[:cutoff], df.iloc[cutoff:]
-    gss = GroupShuffleSplit(n_splits=1, test_size=config.TEST_SIZE, random_state=config.SEED)
-    train_idx, test_idx = next(gss.split(df, groups=df[config.GROUP_COL]))
-    return df.iloc[train_idx], df.iloc[test_idx]
+    # Each row is a different building, so a random split keeps buildings apart.
+    return train_test_split(df, test_size=config.TEST_SIZE, random_state=config.SEED)
 
 
 def build_preprocessor() -> ColumnTransformer:
@@ -50,7 +44,7 @@ def build_preprocessor() -> ColumnTransformer:
     numeric = Pipeline([("impute", SimpleImputer(strategy="median")), ("scale", StandardScaler())])
     logged = Pipeline([
         ("impute", SimpleImputer(strategy="median")),
-        ("log", FunctionTransformer(np.log1p)),
+        ("log", FunctionTransformer(np.log1p, feature_names_out="one-to-one")),
         ("scale", StandardScaler()),
     ])
     categorical = Pipeline([
@@ -66,19 +60,16 @@ def build_preprocessor() -> ColumnTransformer:
 
 
 def log_target(model):
-    """Daily energy is heavy-tailed; fit on log1p(kWh) and predict back in kWh."""
+    """Fit on log1p(kWh) and predict back in kWh."""
     return TransformedTargetRegressor(regressor=model, func=np.log1p, inverse_func=np.expm1)
 
 
 def candidate_models() -> dict:
     return {
         "Baseline (train mean)": DummyRegressor(strategy="mean"),
+        # Settings chosen by cross-validation on the training split (notebooks/cv_explore.py).
         "Ridge regression": log_target(Ridge(alpha=1.0)),
-        # Large leaves stop the forest memorising individual buildings via floor area.
-        "Random forest": log_target(RandomForestRegressor(
-            n_estimators=150, min_samples_leaf=100, max_features=0.7,
-            n_jobs=-1, random_state=config.SEED,
-        )),
+        "Random forest": RandomForestRegressor(n_estimators=300, min_samples_leaf=3, n_jobs=-1, random_state=config.SEED),
     }
 
 
@@ -95,19 +86,13 @@ def main(data_path: Path, out_dir: Path) -> None:
     train, test = split(df)
     X_train, y_train = train[config.FEATURES], train[config.TARGET]
     X_test, y_test = test[config.FEATURES], test[config.TARGET]
-    print(f"rows: train={len(train)} test={len(test)} (split mode: {config.SPLIT_MODE})")
+    print(f"rows: train={len(train)} test={len(test)}")
 
-    if config.SPLIT_MODE == "time":
-        cv, groups = TimeSeriesSplit(n_splits=config.CV_FOLDS), None
-    else:
-        cv, groups = GroupKFold(n_splits=config.CV_FOLDS), train[config.GROUP_COL]
-
+    cv = KFold(n_splits=config.CV_FOLDS, shuffle=True, random_state=config.SEED)
     pipelines, cv_rows = {}, []
     for name, model in candidate_models().items():
         pipe = Pipeline([("prep", build_preprocessor()), ("model", model)])
-        scores = cross_val_score(
-            pipe, X_train, y_train, cv=cv, groups=groups, scoring="neg_root_mean_squared_error"
-        )
+        scores = cross_val_score(pipe, X_train, y_train, cv=cv, scoring="neg_root_mean_squared_error")
         cv_rows.append({"model": name, "cv_RMSE_mean": -scores.mean(), "cv_RMSE_std": scores.std()})
         pipelines[name] = pipe.fit(X_train, y_train)
     cv_table = pd.DataFrame(cv_rows).set_index("model")
@@ -134,8 +119,8 @@ def main(data_path: Path, out_dir: Path) -> None:
         "numeric_ranges": {
             c: [float(X_train[c].min()), float(X_train[c].max())] for c in config.NUMERIC_FEATURES
         },
+        "numeric_medians": {c: float(X_train[c].median()) for c in config.NUMERIC_FEATURES},
         "categories": {c: sorted(X_train[c].unique().tolist()) for c in config.CATEGORICAL_FEATURES},
-        "split_mode": config.SPLIT_MODE,
         "n_train": len(train),
         "n_test": len(test),
         "cv_results": cv_table.round(4).to_dict(orient="index"),
@@ -145,7 +130,8 @@ def main(data_path: Path, out_dir: Path) -> None:
     (out_dir / "metadata.json").write_text(json.dumps(meta, indent=2))
 
     # Reference cases: re-enter these in the dashboard and compare with the notebook output.
-    ref = test.sample(n=min(5, len(test)), random_state=config.SEED)[config.FEATURES].copy()
+    complete = test.dropna(subset=config.FEATURES)  # the dashboard has no way to enter a blank value
+    ref = complete.sample(n=min(5, len(complete)), random_state=config.SEED)[config.FEATURES].copy()
     ref["notebook_prediction"] = best.predict(ref[config.FEATURES]).round(2)
     ref.to_csv(out_dir / "reference_cases.csv", index=False)
     print(f"\nSaved model, metadata and reference cases to {out_dir}")

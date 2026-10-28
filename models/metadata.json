@@ -1,84 +1,89 @@
 {
-  "selected_model": "Random forest",
-  "target": "energy_kwh_day",
+  "selected_model": "Ridge regression",
+  "target": "daily_energy_kwh",
   "unit": "kWh/day",
   "features": [
     "floor_area_m2",
-    "air_temp_c",
-    "building_type",
-    "day_of_week"
+    "planned_occupancy",
+    "operating_hours",
+    "outdoor_temperature_c",
+    "cooling_efficiency_cop",
+    "window_to_wall_ratio",
+    "building_type"
   ],
   "numeric_ranges": {
     "floor_area_m2": [
-      34.0,
-      81290.1
+      258.3,
+      11989.4
     ],
-    "air_temp_c": [
-      -24.8,
-      40.5
+    "planned_occupancy": [
+      5.0,
+      1249.0
+    ],
+    "operating_hours": [
+      4.0,
+      18.0
+    ],
+    "outdoor_temperature_c": [
+      23.0,
+      37.0
+    ],
+    "cooling_efficiency_cop": [
+      2.0,
+      5.0
+    ],
+    "window_to_wall_ratio": [
+      0.1,
+      0.7
     ]
+  },
+  "numeric_medians": {
+    "floor_area_m2": 6162.6,
+    "planned_occupancy": 315.0,
+    "operating_hours": 11.0,
+    "outdoor_temperature_c": 30.0,
+    "cooling_efficiency_cop": 3.42,
+    "window_to_wall_ratio": 0.39
   },
   "categories": {
     "building_type": [
-      "Education",
-      "Entertainment/public assembly",
-      "Food sales and service",
-      "Healthcare",
-      "Lodging/residential",
-      "Manufacturing/industrial",
+      "Library",
       "Office",
-      "Other",
-      "Parking",
-      "Public services",
-      "Religious worship",
       "Retail",
-      "Services",
-      "Technology/science",
-      "Utility",
-      "Warehouse/storage"
-    ],
-    "day_of_week": [
-      "Friday",
-      "Monday",
-      "Saturday",
-      "Sunday",
-      "Thursday",
-      "Tuesday",
-      "Wednesday"
+      "School"
     ]
   },
-  "split_mode": "group",
-  "n_train": 73964,
-  "n_test": 18495,
+  "n_train": 1600,
+  "n_test": 400,
   "cv_results": {
     "Baseline (train mean)": {
-      "cv_RMSE_mean": 6134.8429,
-      "cv_RMSE_std": 1165.5449
+      "cv_RMSE_mean": 3020.0034,
+      "cv_RMSE_std": 123.6909
     },
     "Ridge regression": {
-      "cv_RMSE_mean": 4835.5236,
-      "cv_RMSE_std": 929.2722
+      "cv_RMSE_mean": 592.7635,
+      "cv_RMSE_std": 31.7014
     },
     "Random forest": {
-      "cv_RMSE_mean": 4800.3275,
-      "cv_RMSE_std": 1047.7541
+      "cv_RMSE_mean": 809.2699,
+      "cv_RMSE_std": 85.0031
     }
   },
   "test_results": {
     "Baseline (train mean)": {
-      "MAE": 3188.9045,
-      "RMSE": 5133.9839,
-      "R2": -0.0106
+      "MAE": 2515.4722,
+      "RMSE": 3244.4557,
+      "R2": -0.0057
     },
     "Ridge regression": {
-      "MAE": 1683.1916,
-      "RMSE": 3523.61,
-      "R2": 0.524
+      "MAE": 414.9964,
+      "RMSE": 643.5646,
+      "R2": 0.9604
     },
     "Random forest": {
-      "MAE": 1801.0291,
-      "RMSE": 3707.156,
-      "R2": 0.4731
+      "MAE": 529.1778,
+      "RMSE": 870.5001,
+      "R2": 0.9276
     }
   },
   "sklearn_version": "1.9.1"

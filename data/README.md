@@ -1,43 +1,37 @@
 # Data
 
 ## Source
-**Building Data Genome Project 2 (BDG2)**, Miller et al., 2020, *Scientific Data*.
-Repository: https://github.com/buds-lab/building-data-genome-project-2
-Licence: Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0). Cite the source and share
-derived data under the same licence. Confirm the exact citation from the repository README before the report.
+**`04_Building_Energy_Consumption.xlsx`**, provided by the course (IFJC4002, Case 4). The Guide sheet of the file states:
+- **Synthetic teaching data.** No real buildings or measurements. It is "not evidence of real-world accuracy".
+- 2,000 records, one simulated occupied day for each of 2,000 distinct commercial or institutional buildings (not household data).
+- Generation seed 20261432. Missing data: 16 blank values in each of two input columns.
+- Instructions: exclude `record_id`, split before fitting imputers, encoders, scalers or models, and use the same feature order in the dashboard.
 
-> Lecturer approval of this dataset is still pending. Change the source if it is not approved.
+Cite it in the report as lecturer-provided synthetic data, with the file name above.
 
-## Download (into `data/raw/`, not committed)
-Git LFS files, so use `media.githubusercontent.com`:
+## Reproduce
+Place the Excel file at `data/raw/04_Building_Energy_Consumption.xlsx` (that folder is not committed), then:
 ```bash
-B=https://media.githubusercontent.com/media/buds-lab/building-data-genome-project-2/master/data
-mkdir -p data/raw
-curl -L -o data/raw/metadata.csv           $B/metadata/metadata.csv            # ~0.3 MB
-curl -L -o data/raw/weather.csv            $B/weather/weather.csv              # ~19 MB
-curl -L -o data/raw/electricity_cleaned.csv $B/meters/cleaned/electricity_cleaned.csv  # ~175 MB
-python -m src.build_dataset
+pip install openpyxl
+python -m src.prepare_data     # writes data/processed/building_energy.csv, nothing is changed or filled
 ```
+`data/processed/building_energy.csv` is committed, so the project also runs without the Excel file.
 
-## What `src/build_dataset.py` does
-- Uses the **electricity** meter only (cleaned hourly file), aggregated to daily kWh.
-- Keeps a day only if all 24 hourly readings exist; daily temperature needs at least 18 hourly readings.
-- Joins floor area (`sqm`) and primary space usage from metadata, and daily mean air temperature by site.
-- Drops buildings without floor area, and days under 0.005 kWh/m² (treated as a dead meter; about 3% of days).
-- **Samples 60 random days per building** (seed 42) to keep the data and training fast; use `--days-per-building 0` for all days.
-- Result: about 92,000 rows, 1,549 buildings, 2016–2017.
-
-## Output: `data/processed/daily_energy.csv`
-One row per building per day:
-
-| column | meaning |
-|---|---|
-| `building_id` | used only to split train/test by building, not a feature |
-| `date` | used for ordering, not a feature |
-| `energy_kwh_day` | **target**: daily electricity use in kWh |
-| `floor_area_m2`, `air_temp_c`, `building_type`, `day_of_week` | features |
+## Columns
+| column | role | unit / labels |
+|---|---|---|
+| `record_id` | identifier, **not a feature** | text |
+| `floor_area_m2` | input | m², documented range 250–12,000 (16 blank) |
+| `planned_occupancy` | input | people (16 blank) |
+| `operating_hours` | input | hours/day, 4–18 |
+| `outdoor_temperature_c` | input | °C (forecast daily average; the data span 23–37 °C) |
+| `building_type` | input | Office, Retail, School, Library |
+| `cooling_efficiency_cop` | input | ratio, 2.0–5.0 |
+| `window_to_wall_ratio` | input | 0–1, 0.10–0.70 |
+| `daily_energy_kwh` | **target** | kWh/day, 128.9–18,675.8 |
 
 ## Known limits
-- Occupancy, operating hours and holidays are not in the data (day of week is the only schedule proxy).
-- Hourly weather timestamps are used as given; time zones are not adjusted.
-- Buildings come from a limited set of sites, so performance on other regions is unproven.
+- The data are simulated, so every accuracy figure in this project describes how well the models recover the simulation, not how they would do on real buildings.
+- All temperatures are 23–37 °C (cooling-dominated climate); there are no cold-weather examples.
+- Each building appears once, so there is no time dimension and no repeated measurements.
+- An earlier version of this project used the public BDG2 dataset instead; it was replaced by this file.

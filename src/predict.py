@@ -6,10 +6,25 @@ import pandas as pd
 
 from . import config
 
-# Hard limits: values outside these are rejected as invalid.
-HARD_LIMITS = {"floor_area_m2": (1.0, 1_000_000.0), "air_temp_c": (-40.0, 55.0)}
-LABELS = {"floor_area_m2": "Floor area (m²)", "air_temp_c": "Outdoor temperature (°C)",
-          "building_type": "Building type", "day_of_week": "Day of week"}
+# Hard limits: physically impossible values outside these are rejected as invalid.
+# Values inside them but outside the training range only get a warning.
+HARD_LIMITS = {
+    "floor_area_m2": (1.0, 1_000_000.0),
+    "planned_occupancy": (0.0, 100_000.0),
+    "operating_hours": (0.0, 24.0),
+    "outdoor_temperature_c": (-40.0, 55.0),
+    "cooling_efficiency_cop": (1.0, 10.0),
+    "window_to_wall_ratio": (0.0, 1.0),
+}
+LABELS = {
+    "floor_area_m2": "Floor area (m²)",
+    "planned_occupancy": "Planned occupancy (people)",
+    "operating_hours": "Operating hours (hours/day)",
+    "outdoor_temperature_c": "Outdoor temperature (°C)",
+    "cooling_efficiency_cop": "Cooling efficiency (COP)",
+    "window_to_wall_ratio": "Window-to-wall ratio (0–1)",
+    "building_type": "Building type",
+}
 
 
 def load_artifacts(model_dir=None):
@@ -30,7 +45,7 @@ def validate_inputs(inputs: dict, meta: dict) -> tuple[list, list]:
             continue
         if col in HARD_LIMITS:
             lo, hi = HARD_LIMITS[col]
-            if not isinstance(value, (int, float)) or not lo <= value <= hi:
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not lo <= value <= hi:
                 errors.append(f"{label} must be a number between {lo:,.10g} and {hi:,.10g}")
                 continue
             tlo, thi = meta["numeric_ranges"][col]

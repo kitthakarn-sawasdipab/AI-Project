@@ -1,615 +1,661 @@
 {
-  "rows": 92459,
-  "buildings": 1549,
-  "date_min": "2016-01-01",
-  "date_max": "2017-12-31",
-  "rows_per_building_min": 1,
-  "rows_per_building_max": 60,
-  "missing_in_processed": {
-    "floor_area_m2": 0,
-    "air_temp_c": 0,
-    "building_type": 0,
-    "day_of_week": 0,
-    "energy_kwh_day": 0
+  "rows": 2000,
+  "unique_ids": 2000,
+  "missing": {
+    "floor_area_m2": 16,
+    "planned_occupancy": 16
   },
+  "missing_share_rows_any": 0.016,
+  "rows_missing_both": 0,
   "describe": {
-    "energy_kwh_day": {
-      "count": 92459.0,
-      "mean": 3476.34,
-      "std": 6030.31,
-      "min": 1.0,
-      "1%": 15.0,
-      "25%": 499.3,
-      "50%": 1488.6,
-      "75%": 3770.2,
-      "99%": 28860.48,
-      "max": 158149.2
-    },
     "floor_area_m2": {
-      "count": 92459.0,
-      "mean": 8361.55,
-      "std": 10133.05,
-      "min": 26.3,
-      "1%": 102.4,
-      "25%": 2043.9,
-      "50%": 5248.7,
-      "75%": 10431.4,
-      "99%": 51394.9,
-      "max": 81290.1
+      "count": 1984.0,
+      "mean": 6151.82,
+      "std": 3335.47,
+      "min": 258.3,
+      "1%": 325.89,
+      "25%": 3234.52,
+      "50%": 6156.4,
+      "75%": 9000.62,
+      "99%": 11836.56,
+      "max": 11989.4
     },
-    "air_temp_c": {
-      "count": 92459.0,
-      "mean": 15.67,
-      "std": 9.75,
-      "min": -24.8,
-      "1%": -9.2,
-      "25%": 9.0,
-      "50%": 16.4,
-      "75%": 23.2,
-      "99%": 35.8,
-      "max": 40.5
+    "planned_occupancy": {
+      "count": 1984.0,
+      "mean": 382.55,
+      "std": 281.14,
+      "min": 5.0,
+      "1%": 13.83,
+      "25%": 154.0,
+      "50%": 316.0,
+      "75%": 566.0,
+      "99%": 1127.68,
+      "max": 1249.0
     },
-    "eui": {
-      "count": 92459.0,
-      "mean": 0.47,
-      "std": 0.71,
-      "min": 0.01,
-      "1%": 0.01,
-      "25%": 0.18,
-      "50%": 0.31,
+    "operating_hours": {
+      "count": 2000.0,
+      "mean": 11.04,
+      "std": 4.03,
+      "min": 4.0,
+      "1%": 4.2,
+      "25%": 7.57,
+      "50%": 11.0,
+      "75%": 14.52,
+      "99%": 17.9,
+      "max": 18.0
+    },
+    "outdoor_temperature_c": {
+      "count": 2000.0,
+      "mean": 30.04,
+      "std": 4.05,
+      "min": 23.0,
+      "1%": 23.1,
+      "25%": 26.5,
+      "50%": 30.0,
+      "75%": 33.6,
+      "99%": 36.8,
+      "max": 37.0
+    },
+    "cooling_efficiency_cop": {
+      "count": 2000.0,
+      "mean": 3.44,
+      "std": 0.87,
+      "min": 2.0,
+      "1%": 2.03,
+      "25%": 2.67,
+      "50%": 3.41,
+      "75%": 4.21,
+      "99%": 4.97,
+      "max": 5.0
+    },
+    "window_to_wall_ratio": {
+      "count": 2000.0,
+      "mean": 0.39,
+      "std": 0.17,
+      "min": 0.1,
+      "1%": 0.11,
+      "25%": 0.24,
+      "50%": 0.39,
       "75%": 0.54,
-      "99%": 3.05,
-      "max": 22.14
+      "99%": 0.69,
+      "max": 0.7
+    },
+    "daily_energy_kwh": {
+      "count": 2000.0,
+      "mean": 4396.5,
+      "std": 3067.73,
+      "min": 128.9,
+      "1%": 232.28,
+      "25%": 2033.44,
+      "50%": 3835.0,
+      "75%": 6081.4,
+      "99%": 13384.7,
+      "max": 18675.78
     }
   },
-  "raw_meters": 1578,
-  "raw_hours": 17544,
-  "raw_hourly_missing_share": 0.0892867514854558,
-  "raw_all_missing_meters": 6,
-  "meta_buildings": 1636,
-  "meta_missing_sqm": 0,
-  "meta_missing_type": 21,
-  "target_skew": 5.097443230941648,
-  "target_log_skew": -0.5314777807356387,
+  "outside_documented_range": {
+    "floor_area_m2": 0,
+    "operating_hours": 0,
+    "cooling_efficiency_cop": 0,
+    "window_to_wall_ratio": 0
+  },
+  "building_type_counts": {
+    "Office": 514,
+    "Library": 511,
+    "School": 506,
+    "Retail": 469
+  },
+  "target_mean_when_floor_area_m2_missing": [
+    5138.525625,
+    4390.511980846774
+  ],
+  "target_mean_when_planned_occupancy_missing": [
+    3150.8475,
+    4406.541643145162
+  ],
+  "target_skew": 1.046850994721119,
+  "target_log_skew": -0.9570766534883633,
   "target_quantiles": {
-    "0.5": 1488.6,
-    "0.9": 8952.0,
-    "0.99": 28860.5,
-    "0.999": 63673.1
+    "0.01": 232.3,
+    "0.25": 2033.4,
+    "0.5": 3835.0,
+    "0.75": 6081.4,
+    "0.99": 13384.7
   },
+  "target_cv": 0.6977660650072632,
   "eui_quantiles": {
-    "0.01": 0.011,
-    "0.5": 0.308,
-    "0.99": 3.05,
-    "0.999": 10.632
+    "0.01": 0.327,
+    "0.5": 0.653,
+    "0.99": 1.584
   },
-  "type_counts": {
-    "Education": {
-      "rows": 35915,
-      "buildings": 603,
-      "median_eui": 0.297
+  "spearman_with_target": {
+    "floor_area_m2": 0.857,
+    "planned_occupancy": 0.688,
+    "outdoor_temperature_c": 0.286,
+    "operating_hours": 0.271,
+    "window_to_wall_ratio": 0.064,
+    "cooling_efficiency_cop": -0.062
+  },
+  "spearman_area_occupancy": 0.78,
+  "by_type_descriptive": {
+    "Library": {
+      "n": 511,
+      "mean_kwh": 4076.897,
+      "median_kwh": 3561.31,
+      "median_area": 5983.6,
+      "median_eui": 0.607
     },
     "Office": {
-      "rows": 17760,
-      "buildings": 296,
-      "median_eui": 0.326
-    },
-    "Entertainment/public assembly": {
-      "rows": 11653,
-      "buildings": 197,
-      "median_eui": 0.308
-    },
-    "Public services": {
-      "rows": 9900,
-      "buildings": 165,
-      "median_eui": 0.395
-    },
-    "Lodging/residential": {
-      "rows": 8880,
-      "buildings": 148,
-      "median_eui": 0.237
-    },
-    "Healthcare": {
-      "rows": 1620,
-      "buildings": 27,
-      "median_eui": 0.474
-    },
-    "Other": {
-      "rows": 1560,
-      "buildings": 26,
-      "median_eui": 0.362
-    },
-    "Parking": {
-      "rows": 1320,
-      "buildings": 22,
-      "median_eui": 0.033
-    },
-    "Warehouse/storage": {
-      "rows": 791,
-      "buildings": 14,
-      "median_eui": 0.311
-    },
-    "Manufacturing/industrial": {
-      "rows": 660,
-      "buildings": 11,
-      "median_eui": 0.407
+      "n": 514,
+      "mean_kwh": 4493.205,
+      "median_kwh": 3996.57,
+      "median_area": 6259.9,
+      "median_eui": 0.666
     },
     "Retail": {
-      "rows": 660,
-      "buildings": 11,
-      "median_eui": 0.42
+      "n": 469,
+      "mean_kwh": 5502.74,
+      "median_kwh": 5020.36,
+      "median_area": 5988.9,
+      "median_eui": 0.843
     },
-    "Services": {
-      "rows": 540,
-      "buildings": 9,
-      "median_eui": 0.084
-    },
-    "Technology/science": {
-      "rows": 420,
-      "buildings": 7,
-      "median_eui": 0.508
-    },
-    "Food sales and service": {
-      "rows": 360,
-      "buildings": 6,
-      "median_eui": 0.592
-    },
-    "Utility": {
-      "rows": 240,
-      "buildings": 4,
-      "median_eui": 1.738
-    },
-    "Religious worship": {
-      "rows": 180,
-      "buildings": 3,
-      "median_eui": 0.121
+    "School": {
+      "n": 506,
+      "mean_kwh": 3595.663,
+      "median_kwh": 3215.09,
+      "median_area": 6365.7,
+      "median_eui": 0.521
     }
   },
-  "spearman": {
-    "log_area_vs_energy": 0.7787799198951051,
-    "temp_vs_energy": 0.03732530029668378,
-    "temp_vs_eui": 0.11691847112971454
-  },
-  "eui_by_weekday": {
-    "Monday": 0.3161,
-    "Tuesday": 0.3291,
-    "Wednesday": 0.3241,
-    "Thursday": 0.3316,
-    "Friday": 0.3175,
-    "Saturday": 0.2702,
-    "Sunday": 0.2662
-  },
-  "weekend_vs_weekday_eui_ratio": 0.828728838548124,
-  "eui_by_temp_bin": {
-    "(-30, 0]": 0.3209,
-    "(0, 10]": 0.2713,
-    "(10, 20]": 0.2748,
-    "(20, 30]": 0.3722,
-    "(30, 45]": 0.3391
-  },
-  "n_train": 73964,
-  "n_test": 18495,
-  "buildings_train": 1239,
-  "buildings_test": 310,
-  "building_overlap": 0,
-  "median_area_train_test": [
-    5132.0,
-    5416.9
+  "n_train": 1600,
+  "n_test": 400,
+  "id_overlap": 0,
+  "target_mean_train_test": [
+    4347.83485,
+    4591.14105
   ],
+  "missing_in_test": {
+    "floor_area_m2": 3,
+    "planned_occupancy": 3
+  },
   "comparison": {
     "Baseline (train mean)": {
-      "MAE": 3188.9045,
-      "RMSE": 5133.9839,
-      "R2": -0.0106,
-      "median_abs_pct_error": 150.7039,
-      "MAE_pct_of_mean": 104.3287,
-      "fit_seconds": 0.1908,
-      "predict_ms_per_1000": 2.6515,
-      "cv_RMSE_mean": 6134.8429,
-      "cv_RMSE_std": 1165.5449
+      "MAE": 2515.4722,
+      "RMSE": 3244.4557,
+      "R2": -0.0057,
+      "median_abs_pct_error": 50.9735,
+      "MAE_pct_of_mean": 54.7897,
+      "fit_seconds": 0.2029,
+      "predict_ms_per_1000": 61.5005,
+      "cv_RMSE_mean": 3020.0034,
+      "cv_RMSE_std": 123.6909
     },
     "Ridge regression": {
-      "MAE": 1683.1916,
-      "RMSE": 3523.61,
-      "R2": 0.524,
-      "median_abs_pct_error": 49.8415,
-      "MAE_pct_of_mean": 55.0675,
-      "fit_seconds": 0.3102,
-      "predict_ms_per_1000": 1.9574,
-      "cv_RMSE_mean": 4835.5236,
-      "cv_RMSE_std": 929.2722
+      "MAE": 414.9964,
+      "RMSE": 643.5646,
+      "R2": 0.9604,
+      "median_abs_pct_error": 7.5161,
+      "MAE_pct_of_mean": 9.0391,
+      "fit_seconds": 0.0481,
+      "predict_ms_per_1000": 55.5598,
+      "cv_RMSE_mean": 592.7635,
+      "cv_RMSE_std": 31.7014
     },
     "Random forest": {
-      "MAE": 1801.0291,
-      "RMSE": 3707.156,
-      "R2": 0.4731,
-      "median_abs_pct_error": 50.709,
-      "MAE_pct_of_mean": 58.9227,
-      "fit_seconds": 8.4474,
-      "predict_ms_per_1000": 10.114,
-      "cv_RMSE_mean": 4800.3275,
-      "cv_RMSE_std": 1047.7541
+      "MAE": 529.1778,
+      "RMSE": 870.5001,
+      "R2": 0.9276,
+      "median_abs_pct_error": 9.517,
+      "MAE_pct_of_mean": 11.5261,
+      "fit_seconds": 0.9339,
+      "predict_ms_per_1000": 348.8875,
+      "cv_RMSE_mean": 809.2699,
+      "cv_RMSE_std": 85.0031
     }
   },
-  "bias_mean_error_kwh": -284.2720996266029,
-  "share_overpredicted": 0.5246282779129494,
-  "median_abs_err": 697.7622019542987,
-  "p90_abs_err": 5035.79230215188,
+  "selected_model": "Ridge regression",
+  "bias_mean_error_kwh": -29.129752204518464,
+  "share_overpredicted": 0.4825,
+  "median_abs_err": 262.69803057104866,
+  "p90_abs_err": 925.5868848281723,
+  "pct_err_quantiles": {
+    "0.05": -16.4,
+    "0.25": -7.3,
+    "0.5": -0.4,
+    "0.75": 7.9,
+    "0.95": 22.7
+  },
+  "share_within_10pct": 0.645,
+  "share_within_25pct": 0.965,
   "by_type": {
-    "Education": {
-      "rows": 7455,
-      "buildings": 126,
-      "mean_actual": 3903.31,
-      "MAE_rf": 2449.41,
-      "bias_rf": -96.01,
-      "MAE_ridge": 2135.31,
-      "MAE_rf_pct_of_mean": 62.75
+    "Library": {
+      "rows": 102,
+      "mean_actual": 3830.56,
+      "MAE": 345.17,
+      "bias": 9.18,
+      "MAE_other": 384.48,
+      "MAE_pct_of_mean": 9.01
     },
     "Office": {
-      "rows": 3660,
-      "buildings": 61,
-      "mean_actual": 3182.57,
-      "MAE_rf": 1716.28,
-      "bias_rf": -54.25,
-      "MAE_ridge": 1597.31,
-      "MAE_rf_pct_of_mean": 53.93
-    },
-    "Entertainment/public assembly": {
-      "rows": 2160,
-      "buildings": 36,
-      "mean_actual": 1849.05,
-      "MAE_rf": 1030.71,
-      "bias_rf": -463.08,
-      "MAE_ridge": 1060.11,
-      "MAE_rf_pct_of_mean": 55.74
-    },
-    "Public services": {
-      "rows": 1680,
-      "buildings": 28,
-      "mean_actual": 3218.17,
-      "MAE_rf": 1753.26,
-      "bias_rf": -1404.64,
-      "MAE_ridge": 1582.76,
-      "MAE_rf_pct_of_mean": 54.48
-    },
-    "Lodging/residential": {
-      "rows": 1440,
-      "buildings": 24,
-      "mean_actual": 1454.19,
-      "MAE_rf": 663.32,
-      "bias_rf": -120.37,
-      "MAE_ridge": 605.07,
-      "MAE_rf_pct_of_mean": 45.61
-    },
-    "Parking": {
-      "rows": 540,
-      "buildings": 9,
-      "mean_actual": 1170.71,
-      "MAE_rf": 648.83,
-      "bias_rf": -362.39,
-      "MAE_ridge": 2638.28,
-      "MAE_rf_pct_of_mean": 55.42
-    },
-    "Other": {
-      "rows": 420,
-      "buildings": 7,
-      "mean_actual": 450.43,
-      "MAE_rf": 435.01,
-      "bias_rf": 194.17,
-      "MAE_ridge": 435.11,
-      "MAE_rf_pct_of_mean": 96.58
-    },
-    "Healthcare": {
-      "rows": 300,
-      "buildings": 5,
-      "mean_actual": 5411.91,
-      "MAE_rf": 3113.76,
-      "bias_rf": 626.36,
-      "MAE_ridge": 2574.06,
-      "MAE_rf_pct_of_mean": 57.54
+      "rows": 107,
+      "mean_actual": 4781.93,
+      "MAE": 434.14,
+      "bias": -34.15,
+      "MAE_other": 543.04,
+      "MAE_pct_of_mean": 9.08
     },
     "Retail": {
-      "rows": 300,
-      "buildings": 5,
-      "mean_actual": 2800.2,
-      "MAE_rf": 1721.9,
-      "bias_rf": -1376.15,
-      "MAE_ridge": 1601.03,
-      "MAE_rf_pct_of_mean": 61.49
+      "rows": 102,
+      "mean_actual": 5677.4,
+      "MAE": 523.68,
+      "bias": -28.46,
+      "MAE_other": 677.39,
+      "MAE_pct_of_mean": 9.22
     },
-    "Manufacturing/industrial": {
-      "rows": 240,
-      "buildings": 4,
-      "mean_actual": 755.35,
-      "MAE_rf": 560.31,
-      "bias_rf": -406.97,
-      "MAE_ridge": 581.97,
-      "MAE_rf_pct_of_mean": 74.18
-    },
-    "Warehouse/storage": {
-      "rows": 120,
-      "buildings": 2,
-      "mean_actual": 1317.15,
-      "MAE_rf": 587.64,
-      "bias_rf": -504.15,
-      "MAE_ridge": 703.04,
-      "MAE_rf_pct_of_mean": 44.61
-    },
-    "Religious worship": {
-      "rows": 60,
-      "buildings": 1,
-      "mean_actual": 148.9,
-      "MAE_rf": 1163.87,
-      "bias_rf": 1163.87,
-      "MAE_ridge": 206.86,
-      "MAE_rf_pct_of_mean": 781.64
-    },
-    "Services": {
-      "rows": 60,
-      "buildings": 1,
-      "mean_actual": 2900.55,
-      "MAE_rf": 1078.34,
-      "bias_rf": -1078.34,
-      "MAE_ridge": 2305.37,
-      "MAE_rf_pct_of_mean": 37.18
-    },
-    "Technology/science": {
-      "rows": 60,
-      "buildings": 1,
-      "mean_actual": 8042.7,
-      "MAE_rf": 5296.85,
-      "bias_rf": -5296.85,
-      "MAE_ridge": 5180.77,
-      "MAE_rf_pct_of_mean": 65.86
+    "School": {
+      "rows": 89,
+      "mean_actual": 3988.51,
+      "MAE": 347.44,
+      "bias": -67.76,
+      "MAE_other": 508.49,
+      "MAE_pct_of_mean": 8.71
     }
   },
   "by_size": {
-    "(26.299, 1505.0]": {
-      "rows": 3720,
-      "buildings": 62,
-      "mean_actual": 406.41,
-      "MAE_rf": 265.76,
-      "bias_rf": -154.6,
-      "MAE_ridge": 271.7,
-      "MAE_rf_pct_of_mean": 65.39
+    "(262.199, 2862.1]": {
+      "rows": 80,
+      "mean_actual": 1302.23,
+      "MAE": 117.86,
+      "bias": -54.91,
+      "MAE_other": 184.91,
+      "MAE_pct_of_mean": 9.05
     },
-    "(1505.0, 4292.5]": {
-      "rows": 3735,
-      "buildings": 64,
-      "mean_actual": 921.95,
-      "MAE_rf": 549.27,
-      "bias_rf": -37.31,
-      "MAE_ridge": 508.84,
-      "MAE_rf_pct_of_mean": 59.58
+    "(2862.1, 5138.24]": {
+      "rows": 79,
+      "mean_actual": 2638.63,
+      "MAE": 243.92,
+      "bias": 60.03,
+      "MAE_other": 308.82,
+      "MAE_pct_of_mean": 9.24
     },
-    "(4292.5, 6938.2]": {
-      "rows": 3660,
-      "buildings": 61,
-      "mean_actual": 2167.67,
-      "MAE_rf": 1200.55,
-      "bias_rf": -422.48,
-      "MAE_ridge": 1124.37,
-      "MAE_rf_pct_of_mean": 55.38
+    "(5138.24, 7375.84]": {
+      "rows": 79,
+      "mean_actual": 4600.74,
+      "MAE": 487.8,
+      "bias": -27.47,
+      "MAE_other": 539.82,
+      "MAE_pct_of_mean": 10.6
     },
-    "(6938.2, 12683.3]": {
-      "rows": 3720,
-      "buildings": 62,
-      "mean_actual": 3619.56,
-      "MAE_rf": 2220.41,
-      "bias_rf": -483.66,
-      "MAE_ridge": 2149.67,
-      "MAE_rf_pct_of_mean": 61.34
+    "(7375.84, 9616.38]": {
+      "rows": 79,
+      "mean_actual": 6340.5,
+      "MAE": 564.63,
+      "bias": -128.41,
+      "MAE_other": 695.03,
+      "MAE_pct_of_mean": 8.91
     },
-    "(12683.3, 63138.2]": {
-      "rows": 3660,
-      "buildings": 61,
-      "mean_actual": 8245.35,
-      "MAE_rf": 4813.1,
-      "bias_rf": -327.23,
-      "MAE_ridge": 4400.92,
-      "MAE_rf_pct_of_mean": 58.37
+    "(9616.38, 11978.9]": {
+      "rows": 80,
+      "mean_actual": 8093.92,
+      "MAE": 632.56,
+      "bias": 48.33,
+      "MAE_other": 897.31,
+      "MAE_pct_of_mean": 7.82
+    }
+  },
+  "by_hours": {
+    "(3, 8]": {
+      "rows": 119,
+      "mean_actual": 3316.13,
+      "MAE": 332.82,
+      "bias": 51.5,
+      "MAE_other": 394.62,
+      "MAE_pct_of_mean": 10.04
+    },
+    "(8, 12]": {
+      "rows": 115,
+      "mean_actual": 4172.24,
+      "MAE": 347.54,
+      "bias": -74.13,
+      "MAE_other": 393.75,
+      "MAE_pct_of_mean": 8.33
+    },
+    "(12, 16]": {
+      "rows": 114,
+      "mean_actual": 5493.99,
+      "MAE": 471.95,
+      "bias": -149.73,
+      "MAE_other": 717.12,
+      "MAE_pct_of_mean": 8.59
+    },
+    "(16, 19]": {
+      "rows": 52,
+      "mean_actual": 6456.05,
+      "MAE": 627.37,
+      "bias": 150.28,
+      "MAE_other": 724.59,
+      "MAE_pct_of_mean": 9.72
     }
   },
   "by_temp": {
-    "(-30, 0]": {
-      "rows": 1096,
-      "buildings": 157,
-      "mean_actual": 4018.78,
-      "MAE_rf": 1885.67,
-      "bias_rf": -582.86,
-      "MAE_ridge": 2017.67,
-      "MAE_rf_pct_of_mean": 46.92
+    "(22, 26]": {
+      "rows": 89,
+      "mean_actual": 2976.49,
+      "MAE": 282.22,
+      "bias": 48.29,
+      "MAE_other": 282.45,
+      "MAE_pct_of_mean": 9.48
     },
-    "(0, 10]": {
-      "rows": 4169,
-      "buildings": 274,
-      "mean_actual": 2784.79,
-      "MAE_rf": 1570.93,
-      "bias_rf": -287.99,
-      "MAE_ridge": 1439.68,
-      "MAE_rf_pct_of_mean": 56.41
+    "(26, 30]": {
+      "rows": 103,
+      "mean_actual": 3638.99,
+      "MAE": 296.85,
+      "bias": -110.3,
+      "MAE_other": 413.98,
+      "MAE_pct_of_mean": 8.16
     },
-    "(10, 20]": {
-      "rows": 6551,
-      "buildings": 308,
-      "mean_actual": 2906.95,
-      "MAE_rf": 1869.82,
-      "bias_rf": -100.04,
-      "MAE_ridge": 1621.86,
-      "MAE_rf_pct_of_mean": 64.32
+    "(30, 34]": {
+      "rows": 113,
+      "mean_actual": 5270.56,
+      "MAE": 402.1,
+      "bias": -118.89,
+      "MAE_other": 558.03,
+      "MAE_pct_of_mean": 7.63
     },
-    "(20, 30]": {
-      "rows": 5904,
-      "buildings": 279,
-      "mean_actual": 3256.55,
-      "MAE_rf": 1890.98,
-      "bias_rf": -506.36,
-      "MAE_ridge": 1869.89,
-      "MAE_rf_pct_of_mean": 58.07
-    },
-    "(30, 45]": {
-      "rows": 775,
-      "buildings": 113,
-      "mean_actual": 2899.67,
-      "MAE_rf": 1652.42,
-      "bias_rf": 292.59,
-      "MAE_ridge": 1616.24,
-      "MAE_rf_pct_of_mean": 56.99
+    "(34, 38]": {
+      "rows": 95,
+      "mean_actual": 6327.99,
+      "MAE": 682.82,
+      "bias": 93.12,
+      "MAE_other": 850.9,
+      "MAE_pct_of_mean": 10.79
     }
   },
-  "by_weekday": {
-    "Monday": {
-      "rows": 2678,
-      "buildings": 309,
-      "mean_actual": 3232.19,
-      "MAE_rf": 1936.81,
-      "bias_rf": -356.82,
-      "MAE_ridge": 1743.38,
-      "MAE_rf_pct_of_mean": 59.92
+  "by_cop": {
+    "(1.9, 2.75]": {
+      "rows": 116,
+      "mean_actual": 4537.04,
+      "MAE": 502.64,
+      "bias": -222.18,
+      "MAE_other": 640.67,
+      "MAE_pct_of_mean": 11.08
     },
-    "Tuesday": {
-      "rows": 2585,
-      "buildings": 309,
-      "mean_actual": 3225.22,
-      "MAE_rf": 1808.16,
-      "bias_rf": -274.64,
-      "MAE_ridge": 1723.57,
-      "MAE_rf_pct_of_mean": 56.06
+    "(2.75, 3.5]": {
+      "rows": 109,
+      "mean_actual": 4546.27,
+      "MAE": 397.58,
+      "bias": 21.24,
+      "MAE_other": 467.13,
+      "MAE_pct_of_mean": 8.75
     },
-    "Wednesday": {
-      "rows": 2598,
-      "buildings": 309,
-      "mean_actual": 3070.22,
-      "MAE_rf": 1790.58,
-      "bias_rf": -408.0,
-      "MAE_ridge": 1657.42,
-      "MAE_rf_pct_of_mean": 58.32
+    "(3.5, 4.25]": {
+      "rows": 88,
+      "mean_actual": 4603.23,
+      "MAE": 323.69,
+      "bias": -4.45,
+      "MAE_other": 449.84,
+      "MAE_pct_of_mean": 7.03
     },
-    "Thursday": {
-      "rows": 2691,
-      "buildings": 309,
-      "mean_actual": 3101.21,
-      "MAE_rf": 1819.68,
-      "bias_rf": -329.98,
-      "MAE_ridge": 1686.07,
-      "MAE_rf_pct_of_mean": 58.68
-    },
-    "Friday": {
-      "rows": 2616,
-      "buildings": 309,
-      "mean_actual": 3167.93,
-      "MAE_rf": 1834.26,
-      "bias_rf": -218.26,
-      "MAE_ridge": 1702.05,
-      "MAE_rf_pct_of_mean": 57.9
-    },
-    "Saturday": {
-      "rows": 2668,
-      "buildings": 309,
-      "mean_actual": 2852.6,
-      "MAE_rf": 1739.53,
-      "bias_rf": -238.33,
-      "MAE_ridge": 1662.32,
-      "MAE_rf_pct_of_mean": 60.98
-    },
-    "Sunday": {
-      "rows": 2659,
-      "buildings": 310,
-      "mean_actual": 2752.5,
-      "MAE_rf": 1677.7,
-      "bias_rf": -164.46,
-      "MAE_ridge": 1607.98,
-      "MAE_rf_pct_of_mean": 60.95
+    "(4.25, 5.1]": {
+      "rows": 87,
+      "mean_actual": 4707.27,
+      "MAE": 412.32,
+      "bias": 140.19,
+      "MAE_other": 538.51,
+      "MAE_pct_of_mean": 8.76
     }
   },
-  "top5pct_buildings_share_of_abs_error": 0.3308605346137955,
-  "n_test_buildings": 310,
-  "worst_buildings": [
+  "by_pred_level": {
+    "(139.156, 1768.49]": {
+      "rows": 80,
+      "mean_actual": 1118.47,
+      "MAE": 89.18,
+      "bias": -28.75,
+      "MAE_other": 141.08,
+      "MAE_pct_of_mean": 7.97
+    },
+    "(1768.49, 3045.922]": {
+      "rows": 80,
+      "mean_actual": 2445.08,
+      "MAE": 250.08,
+      "bias": -5.4,
+      "MAE_other": 320.17,
+      "MAE_pct_of_mean": 10.23
+    },
+    "(3045.922, 4891.706]": {
+      "rows": 80,
+      "mean_actual": 3927.16,
+      "MAE": 324.18,
+      "bias": -23.68,
+      "MAE_other": 406.15,
+      "MAE_pct_of_mean": 8.25
+    },
+    "(4891.706, 7152.946]": {
+      "rows": 80,
+      "mean_actual": 5691.08,
+      "MAE": 523.83,
+      "bias": 107.85,
+      "MAE_other": 593.89,
+      "MAE_pct_of_mean": 9.2
+    },
+    "(7152.946, 15330.121]": {
+      "rows": 80,
+      "mean_actual": 9773.91,
+      "MAE": 887.71,
+      "bias": -195.67,
+      "MAE_other": 1184.6,
+      "MAE_pct_of_mean": 9.08
+    }
+  },
+  "by_missing_input": {
+    "complete": {
+      "rows": 394,
+      "mean_actual": 4600.09,
+      "MAE": 409.34,
+      "bias": -23.51,
+      "MAE_other": 527.99,
+      "MAE_pct_of_mean": 8.9
+    },
+    "had a missing input": {
+      "rows": 6,
+      "mean_actual": 4003.82,
+      "MAE": 786.69,
+      "bias": -397.84,
+      "MAE_other": 607.16,
+      "MAE_pct_of_mean": 19.65
+    }
+  },
+  "worst_predictions": [
     {
-      "building_id": "Peacock_education_Karl",
-      "type": "Education",
-      "area": 44381.9,
-      "mean_actual": 1918.1,
-      "mae": 21867.0,
-      "bias": 21867.0
+      "record_id": "P04_0101",
+      "building_type": "Retail",
+      "floor_area_m2": 9397.4,
+      "planned_occupancy": 672.0,
+      "operating_hours": 14.7,
+      "outdoor_temperature_c": 35.7,
+      "cooling_efficiency_cop": 2.1,
+      "window_to_wall_ratio": 0.6,
+      "daily_energy_kwh": 18675.8,
+      "pred": 15330.1,
+      "err": -3345.7
     },
     {
-      "building_id": "Rat_public_Sana",
-      "type": "Public services",
-      "area": 37161.2,
-      "mean_actual": 25740.4,
-      "mae": 18914.4,
-      "bias": -17406.5
+      "record_id": "P04_1732",
+      "building_type": "Retail",
+      "floor_area_m2": 9176.9,
+      "planned_occupancy": 188.0,
+      "operating_hours": 11.8,
+      "outdoor_temperature_c": 33.2,
+      "cooling_efficiency_cop": 2.3,
+      "window_to_wall_ratio": 0.3,
+      "daily_energy_kwh": 13154.2,
+      "pred": 9972.3,
+      "err": -3181.9
     },
     {
-      "building_id": "Rat_public_Alanna",
-      "type": "Public services",
-      "area": 42888.4,
-      "mean_actual": 28297.9,
-      "mae": 15240.4,
-      "bias": -15240.4
+      "record_id": "P04_1547",
+      "building_type": "Retail",
+      "floor_area_m2": 10793.3,
+      "planned_occupancy": 894.0,
+      "operating_hours": 16.8,
+      "outdoor_temperature_c": 34.7,
+      "cooling_efficiency_cop": 4.4,
+      "window_to_wall_ratio": 0.4,
+      "daily_energy_kwh": 12003.9,
+      "pred": 14958.6,
+      "err": 2954.7
     },
     {
-      "building_id": "Gator_assembly_Blanca",
-      "type": "Entertainment/public assembly",
-      "area": 8573.8,
-      "mean_actual": 17605.7,
-      "mae": 15128.1,
-      "bias": -15128.1
+      "record_id": "P04_0619",
+      "building_type": "Retail",
+      "floor_area_m2": 6800.2,
+      "planned_occupancy": 331.0,
+      "operating_hours": 16.8,
+      "outdoor_temperature_c": 36.0,
+      "cooling_efficiency_cop": 2.4,
+      "window_to_wall_ratio": 0.7,
+      "daily_energy_kwh": 14960.9,
+      "pred": 12341.4,
+      "err": -2619.5
     },
     {
-      "building_id": "Peacock_education_Ophelia",
-      "type": "Education",
-      "area": 11226.0,
-      "mean_actual": 16822.1,
-      "mae": 13196.9,
-      "bias": -13196.9
+      "record_id": "P04_1382",
+      "building_type": "Retail",
+      "floor_area_m2": 6618.1,
+      "planned_occupancy": 247.0,
+      "operating_hours": 15.0,
+      "outdoor_temperature_c": 36.4,
+      "cooling_efficiency_cop": 2.8,
+      "window_to_wall_ratio": 0.7,
+      "daily_energy_kwh": 13385.9,
+      "pred": 10794.9,
+      "err": -2590.9
     },
     {
-      "building_id": "Hog_office_Cornell",
-      "type": "Office",
-      "area": 62385.0,
-      "mean_actual": 36616.6,
-      "mae": 12123.2,
-      "bias": -12116.3
+      "record_id": "P04_0745",
+      "building_type": "Office",
+      "floor_area_m2": 10358.6,
+      "planned_occupancy": 656.0,
+      "operating_hours": 11.7,
+      "outdoor_temperature_c": 35.9,
+      "cooling_efficiency_cop": 3.2,
+      "window_to_wall_ratio": 0.6,
+      "daily_energy_kwh": 12901.2,
+      "pred": 10620.5,
+      "err": -2280.8
     },
     {
-      "building_id": "Bull_office_Rob",
-      "type": "Office",
-      "area": 30885.3,
-      "mean_actual": 6663.6,
-      "mae": 11196.4,
-      "bias": 11196.4
+      "record_id": "P04_1461",
+      "building_type": "Library",
+      "floor_area_m2": 8407.3,
+      "planned_occupancy": 130.0,
+      "operating_hours": 13.6,
+      "outdoor_temperature_c": 36.8,
+      "cooling_efficiency_cop": 4.2,
+      "window_to_wall_ratio": 0.7,
+      "daily_energy_kwh": 10506.4,
+      "pred": 8319.1,
+      "err": -2187.4
     },
     {
-      "building_id": "Moose_education_Maria",
-      "type": "Education",
-      "area": 35999.9,
-      "mean_actual": 17509.2,
-      "mae": 10962.1,
-      "bias": -10962.1
+      "record_id": "P04_0355",
+      "building_type": "Office",
+      "floor_area_m2": 8348.9,
+      "planned_occupancy": 614.0,
+      "operating_hours": 15.9,
+      "outdoor_temperature_c": 36.9,
+      "cooling_efficiency_cop": 3.2,
+      "window_to_wall_ratio": 0.5,
+      "daily_energy_kwh": 13264.0,
+      "pred": 11187.5,
+      "err": -2076.5
     },
     {
-      "building_id": "Wolf_education_Cheryl",
-      "type": "Education",
-      "area": 25605.0,
-      "mean_actual": 3213.7,
-      "mae": 10721.4,
-      "bias": 10721.4
+      "record_id": "P04_0301",
+      "building_type": "School",
+      "floor_area_m2": 11807.3,
+      "planned_occupancy": 877.0,
+      "operating_hours": 16.3,
+      "outdoor_temperature_c": 25.5,
+      "cooling_efficiency_cop": 2.1,
+      "window_to_wall_ratio": 0.3,
+      "daily_energy_kwh": 5869.0,
+      "pred": 7672.5,
+      "err": 1803.5
     },
     {
-      "building_id": "Bear_education_Elise",
-      "type": "Education",
-      "area": 20664.8,
-      "mean_actual": 3483.8,
-      "mae": 10006.0,
-      "bias": 10006.0
+      "record_id": "P04_0211",
+      "building_type": "Retail",
+      "floor_area_m2": 6520.0,
+      "planned_occupancy": 603.0,
+      "operating_hours": 13.6,
+      "outdoor_temperature_c": 33.4,
+      "cooling_efficiency_cop": 2.5,
+      "window_to_wall_ratio": 0.3,
+      "daily_energy_kwh": 9893.1,
+      "pred": 8099.5,
+      "err": -1793.6
     }
   ],
-  "permutation_importance_rmse_increase": {
-    "air_temp_c": 3.7,
-    "day_of_week": 8.9,
-    "building_type": 447.3,
-    "floor_area_m2": 2522.2
+  "top5pct_rows_share_of_abs_error": 0.2426269627105204,
+  "ridge_coefficients": {
+    "num_log__floor_area_m2": {
+      "coef_log_scale": 0.7943,
+      "pct_change_per_1sd": 121.2834
+    },
+    "cat__building_type_Retail": {
+      "coef_log_scale": 0.2338,
+      "pct_change_per_1sd": 26.3427
+    },
+    "num__operating_hours": {
+      "coef_log_scale": 0.2224,
+      "pct_change_per_1sd": 24.9095
+    },
+    "num__outdoor_temperature_c": {
+      "coef_log_scale": 0.2093,
+      "pct_change_per_1sd": 23.2764
+    },
+    "num__window_to_wall_ratio": {
+      "coef_log_scale": 0.0369,
+      "pct_change_per_1sd": 3.7612
+    },
+    "num_log__planned_occupancy": {
+      "coef_log_scale": 0.0337,
+      "pct_change_per_1sd": 3.4266
+    },
+    "cat__building_type_Office": {
+      "coef_log_scale": 0.0209,
+      "pct_change_per_1sd": 2.113
+    },
+    "cat__building_type_Library": {
+      "coef_log_scale": -0.0632,
+      "pct_change_per_1sd": -6.1206
+    },
+    "num__cooling_efficiency_cop": {
+      "coef_log_scale": -0.0721,
+      "pct_change_per_1sd": -6.9606
+    },
+    "cat__building_type_School": {
+      "coef_log_scale": -0.1916,
+      "pct_change_per_1sd": -17.4345
+    }
+  },
+  "permutation_importance_selected": {
+    "planned_occupancy": 29.9,
+    "window_to_wall_ratio": 89.3,
+    "cooling_efficiency_cop": 312.9,
+    "building_type": 750.7,
+    "outdoor_temperature_c": 1042.9,
+    "operating_hours": 1192.8,
+    "floor_area_m2": 2799.1
+  },
+  "permutation_importance_other": {
+    "planned_occupancy": 13.7,
+    "window_to_wall_ratio": 32.8,
+    "cooling_efficiency_cop": 202.3,
+    "building_type": 380.5,
+    "outdoor_temperature_c": 902.5,
+    "operating_hours": 1028.3,
+    "floor_area_m2": 2681.4
   }
 }

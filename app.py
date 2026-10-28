@@ -5,6 +5,16 @@ from src.predict import HARD_LIMITS, LABELS, load_artifacts, predict_one, valida
 
 st.set_page_config(page_title="Building Energy Predictor", page_icon="⚡")
 
+# step and display format for each numeric input
+NUMBER_UI = {
+    "floor_area_m2": dict(step=100.0, format="%.1f"),
+    "planned_occupancy": dict(step=10.0, format="%.0f"),
+    "operating_hours": dict(step=0.5, format="%.1f"),
+    "outdoor_temperature_c": dict(step=0.5, format="%.1f"),
+    "cooling_efficiency_cop": dict(step=0.1, format="%.2f"),
+    "window_to_wall_ratio": dict(step=0.05, format="%.2f"),
+}
+
 
 @st.cache_resource
 def get_artifacts():
@@ -19,12 +29,12 @@ except FileNotFoundError:
 
 st.title("⚡ Building Daily Energy Use Predictor")
 st.write(
-    "Estimate a building's energy use for one day. Enter the building and weather details, "
-    f"then press **Predict**. The result is in **{meta['unit']}**."
+    "Estimate a commercial or institutional building's electricity use for one occupied day. "
+    f"Enter the building details, then press **Predict**. The result is in **{meta['unit']}**."
 )
 st.caption(
-    f"Model: {meta['selected_model']} · trained on {meta['n_train']} building-days. "
-    "Estimates are not measured values."
+    f"Model: {meta['selected_model']} · trained on {meta['n_train']} simulated building scenarios "
+    "(synthetic teaching data). Estimates are not measured values."
 )
 
 predict_tab, monitor_tab = st.tabs(["Predict", "Monitoring"])
@@ -36,25 +46,18 @@ with predict_tab:
     # value is never replaced by an older one. The widgets have no min/max on purpose:
     # every value reaches validate_inputs, which gives a clear error message.
     with st.form("predict_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            lo, hi = HARD_LIMITS["floor_area_m2"]
-            inputs["floor_area_m2"] = st.number_input(
-                "Floor area (m²)",
-                value=float(round(sum(ranges["floor_area_m2"]) / 2)), step=100.0,
-                help=f"Allowed: {lo:,.0f}–{hi:,.0f} m². "
-                     f"Training range: {ranges['floor_area_m2'][0]:.0f}–{ranges['floor_area_m2'][1]:.0f} m².",
-            )
-            inputs["building_type"] = st.selectbox("Building type", meta["categories"]["building_type"])
-        with col2:
-            lo, hi = HARD_LIMITS["air_temp_c"]
-            inputs["air_temp_c"] = st.number_input(
-                "Outdoor temperature (°C)",
-                value=float(round(sum(ranges["air_temp_c"]) / 2, 1)), step=0.5,
-                help=f"Allowed: {lo:g} to {hi:g} °C. "
-                     f"Training range: {ranges['air_temp_c'][0]:.1f}–{ranges['air_temp_c'][1]:.1f} °C.",
-            )
-            inputs["day_of_week"] = st.selectbox("Day of week", meta["categories"]["day_of_week"])
+        cols = st.columns(2)
+        for i, name in enumerate(config.NUMERIC_FEATURES):
+            lo, hi = HARD_LIMITS[name]
+            tlo, thi = ranges[name]
+            with cols[i % 2]:
+                inputs[name] = st.number_input(
+                    LABELS[name],
+                    value=float(meta["numeric_medians"][name]),
+                    help=f"Allowed: {lo:,.10g} to {hi:,.10g}. Training range: {tlo:,.10g} to {thi:,.10g}.",
+                    **NUMBER_UI[name],
+                )
+        inputs["building_type"] = st.selectbox(LABELS["building_type"], meta["categories"]["building_type"])
         submitted = st.form_submit_button("Predict", type="primary")
 
     if submitted:

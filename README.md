@@ -1,10 +1,12 @@
 # Building Daily Energy Use Prediction (IFJC4002, Case 4)
 
-Predicts a building's daily energy use (kWh/day) from floor area, outdoor temperature,
-building type and day of week, and serves the model in a Streamlit dashboard.
+Predicts a commercial or institutional building's electricity use for one occupied day (kWh/day) from
+floor area, planned occupancy, operating hours, outdoor temperature, building type, cooling efficiency
+and window-to-wall ratio, and serves the model in a Streamlit dashboard.
 
-> Status: scaffold. Real data, final features and results are pending lecturer approval of the dataset.
-> `src/make_demo_data.py` produces **synthetic** data only to check that the code runs.
+> The data are the course's **synthetic** teaching file `04_Building_Energy_Consumption.xlsx`
+> (2,000 simulated buildings). Accuracy figures show how well the models recover the simulation,
+> not performance on real buildings. See `data/README.md`.
 
 ## Group
 - Kitthakarn Sawasdipab
@@ -15,17 +17,17 @@ building type and day of week, and serves the model in a Streamlit dashboard.
 
 ## Layout
 ```
-app.py                 Streamlit dashboard (Predict + Monitoring tabs)
-src/config.py          columns, split mode, paths, seed
+app.py                 Streamlit dashboard (Predict form + Monitoring tab)
+src/config.py          columns, paths, seed, split settings
+src/prepare_data.py    converts the Excel file to data/processed/building_energy.csv
 src/train.py           split, baseline + 2 models, CV, test metrics, saves model
 src/predict.py         input validation and prediction (shared by app and tests)
 src/monitor.py         prediction log and review trigger
-src/make_demo_data.py  synthetic data for smoke tests
-src/build_dataset.py   builds data/processed/daily_energy.csv from the raw BDG2 files
 notebooks/analysis.ipynb  EDA, model comparison and error analysis (writes docs/figures/)
-tests/                 pytest checks (reload agreement, boundary and invalid inputs)
+notebooks/cv_explore.py   cross-validation comparison of candidate settings (training data only)
+tests/                 pytest checks (pipeline, validation, and the app form)
 data/                  see data/README.md
-docs/                   report outline, test log, contribution and prompt records
+docs/                  report draft and outline, test log, contribution and prompt records, figures
 models/                created by training: model.joblib, metadata.json, reference_cases.csv
 ```
 
@@ -33,11 +35,13 @@ models/                created by training: model.joblib, metadata.json, referen
 ```bash
 python -m venv .venv && .venv\Scripts\activate      # Windows
 pip install -r requirements.txt
-# place the approved dataset at data/processed/daily_energy.csv (see data/README.md)
 python -m src.train          # prints CV and test metrics, saves models/
-pytest                       # smoke tests (use synthetic data)
+pytest                       # 35 tests, about 30 s
 streamlit run app.py
-# optional: re-run the analysis notebook (needs data/raw/ files for the raw-data statistics)
+```
+`data/processed/building_energy.csv` is in the repository. To rebuild it from the Excel file see `data/README.md`.
+To re-run the analysis notebook:
+```bash
 pip install -r requirements-dev.txt
 jupyter nbconvert --to notebook --execute --inplace notebooks/analysis.ipynb
 ```
@@ -48,8 +52,9 @@ Pipeline, so the dashboard applies the same transformations and feature order as
 1. Push this folder to a GitHub repository, including `models/` (commit after training).
 2. On share.streamlit.io choose the repository, branch `main`, main file `app.py`.
 3. Live app: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/
-4. Give the lecturer access to the repository if it is private.
+4. After pushing changes to files in `src/`, use **Manage app → Reboot app**, otherwise the running process can keep old modules.
+5. Give the lecturer access to the repository if it is private.
 
 ## Checking dashboard against notebook
-`models/reference_cases.csv` lists test rows with the training script's predictions. Enter them
+`models/reference_cases.csv` lists complete test rows with the training script's predictions. Enter them
 in the dashboard and record the comparison in `docs/test_log.md`.

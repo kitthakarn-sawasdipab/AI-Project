@@ -1,6 +1,6 @@
-floor_area_m2,air_temp_c,building_type,day_of_week,notebook_prediction
-5292.6,16.6,Education,Friday,2112.38
-758.8,26.8,Public services,Sunday,251.77
-7231.9,18.9,Entertainment/public assembly,Wednesday,2240.59
-1932.8,16.8,Entertainment/public assembly,Friday,516.98
-2504.0,24.3,Office,Friday,588.42
+floor_area_m2,planned_occupancy,operating_hours,outdoor_temperature_c,cooling_efficiency_cop,window_to_wall_ratio,building_type,notebook_prediction
+9634.6,773.0,9.5,30.6,4.84,0.31,Retail,6837.8
+566.4,33.0,9.0,34.0,3.48,0.3,School,336.49
+11592.7,545.0,7.4,30.5,2.87,0.21,School,5389.53
+11406.9,312.0,11.9,35.4,3.21,0.17,Retail,12676.13
+4700.7,95.0,6.3,32.7,3.84,0.23,Office,2566.35

@@ -1,0 +1,7 @@
+Ridge raw          CV RMSE   1439.1 +-   52.6 | CV R2 0.772
+Ridge log-target   CV RMSE    592.8 +-   31.7 | CV R2 0.961
+RF raw leaf3       CV RMSE    809.3 +-   85.0 | CV R2 0.928
+RF raw leaf10      CV RMSE    960.0 +-   93.1 | CV R2 0.898
+RF log leaf3       CV RMSE    831.9 +-   74.2 | CV R2 0.924
+GBM raw            CV RMSE    712.2 +-   57.9 | CV R2 0.944
+GBM log            CV RMSE    619.9 +-   61.4 | CV R2 0.958
