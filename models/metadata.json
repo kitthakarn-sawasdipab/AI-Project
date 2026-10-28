@@ -53,6 +53,12 @@
       "School"
     ]
   },
+  "type_median_intensity": {
+    "Library": 0.6137,
+    "Office": 0.6738,
+    "Retail": 0.8492,
+    "School": 0.5201
+  },
   "n_train": 1600,
   "n_test": 400,
   "cv_results": {

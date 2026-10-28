@@ -121,6 +121,9 @@ def main(data_path: Path, out_dir: Path) -> None:
         },
         "numeric_medians": {c: float(X_train[c].median()) for c in config.NUMERIC_FEATURES},
         "categories": {c: sorted(X_train[c].unique().tolist()) for c in config.CATEGORICAL_FEATURES},
+        # typical energy per m² for each building type, shown in the dashboard as context
+        "type_median_intensity": (train[config.TARGET] / train["floor_area_m2"])
+        .groupby(train["building_type"]).median().round(4).to_dict(),
         "n_train": len(train),
         "n_test": len(test),
         "cv_results": cv_table.round(4).to_dict(orient="index"),
