@@ -27,7 +27,8 @@ notebooks/analysis.ipynb  EDA, model comparison and error analysis (writes docs/
 notebooks/cv_explore.py   cross-validation comparison of candidate settings (training data only)
 tests/                 pytest checks (pipeline, validation, and the app form)
 data/                  see data/README.md
-docs/                  report draft and outline, test log, contribution and prompt records, figures
+docs/                  report (report_final.md, built into report.pdf by build_report.py), outline, test log,
+                       contribution and prompt records, figures and dashboard screenshots
 models/                created by training: model.joblib, metadata.json, reference_cases.csv
 ```
 

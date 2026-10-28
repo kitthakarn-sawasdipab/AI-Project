@@ -1,0 +1,58 @@
+{
+  "reference_cases": [
+    {
+      "case": 1,
+      "type": "Retail",
+      "notebook": 6837.8,
+      "dashboard": "6,838 kWh/day",
+      "alerts": []
+    },
+    {
+      "case": 2,
+      "type": "School",
+      "notebook": 336.49,
+      "dashboard": "336 kWh/day",
+      "alerts": []
+    },
+    {
+      "case": 3,
+      "type": "School",
+      "notebook": 5389.53,
+      "dashboard": "5,390 kWh/day",
+      "alerts": []
+    },
+    {
+      "case": 4,
+      "type": "Retail",
+      "notebook": 12676.13,
+      "dashboard": "12,676 kWh/day",
+      "alerts": []
+    },
+    {
+      "case": 5,
+      "type": "Office",
+      "notebook": 2566.35,
+      "dashboard": "2,566 kWh/day",
+      "alerts": []
+    }
+  ],
+  "out_of_range": {
+    "metric": "25,160 kWh/day",
+    "alerts": [
+      "These inputs are outside the range seen during training, so the prediction is less reliable: Floor area (m²)."
+    ]
+  },
+  "invalid_area": {
+    "metric": "12",
+    "alerts": [
+      "Floor area (m²) must be a number between 1 and 1,000,000"
+    ]
+  },
+  "invalid_temperature": {
+    "metric": "12",
+    "alerts": [
+      "Outdoor temperature (°C) must be a number between -40 and 55"
+    ]
+  },
+  "monitoring_text": "⚡ Building Daily Energy Use Predictor\n\nEstimate a commercial or institutional building's electricity use for one occupied day.\n\n🔮 Predict\n\n📈 Monitoring\n\nNon-sensitive record of inputs and predictions made through this app.\n\nPredictions logged\n\n12\n\nShare with out-of-range inputs\n\n17%\n\nLogged predictions alone do not show real-world accuracy; that needs measured outcomes."
+}

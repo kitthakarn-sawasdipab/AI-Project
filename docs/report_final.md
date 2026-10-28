@@ -1,19 +1,4 @@
-# Predicting Daily Building Energy Use with Machine Learning
-
-IFJC4002 Practical Artificial Intelligence with Python · Faculty of Intelligent Computing, Universiti Malaysia Perlis
-Case 4: Building energy consumption prediction
-
-Group: Kitthakarn Sawasdipab, Narawit Midsalae, Arissara Arree, Nattawut Kamchoo, Phakchira Nunnum
-
-Live app: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/
-Repository: https://github.com/kitthakarn-sawasdipab/AI-Project
-
-> **Draft status.** All numbers come from `notebooks/analysis.ipynb`, `docs/figures/results.json` and `models/metadata.json`.
-> Items marked **[GROUP]** need the group's own input or evidence (screenshots, manual tests on the deployed app, decisions).
-> The group must read, check and rewrite this text in its own words before submitting.
-> **Important:** the data are synthetic, so every accuracy figure below describes how well the models recover a simulation, not how they would perform on real buildings.
-
----
+> **Note on the data.** The data are synthetic teaching data, so every accuracy figure in this report describes how well the models recover a simulation, not how they would perform on real buildings.
 
 ## 1. Problem definition and dataset analysis (CO1)
 
@@ -118,7 +103,7 @@ Test set, 400 buildings (CV on the 1,600 training rows in the last column):
 | **Ridge regression (log target)** | **415** | **644** | **0.960** | **7.5%** | **593 ± 32** |
 | Random forest | 529 | 871 | 0.928 | 9.5% | 809 ± 85 |
 
-Both models beat the baseline clearly (RMSE lower by 80% for Ridge and 73% for the forest). Ridge is better than the forest on every metric, with RMSE 26% lower and MAE 22% lower, and it is faster: fit time 0.05 s against 0.93 s. On average a Ridge estimate is within about 9% of the true daily use (MAE 9.0% of the mean).
+Both models beat the baseline clearly (RMSE lower by 80% for Ridge and 73% for the forest). Ridge is better than the forest on every metric, with RMSE 26% lower and MAE 22% lower, and it is faster: fit time about 0.1 s against about 1 s (timings vary between runs and machines). On average a Ridge estimate is within about 9% of the true daily use (MAE 9.0% of the mean).
 
 ---
 
@@ -147,8 +132,7 @@ Permutation importance on the test set (increase in RMSE when a feature is shuff
 
 Ridge coefficients (log scale, for +1 standard deviation of each input): floor area +121% energy, Retail +26%, operating hours +25%, outdoor temperature +23%, window ratio +4%, occupancy +3%, cooling efficiency −7%, School −17%. In plain units, one extra operating hour or one extra °C each raise predicted use by roughly 5%.
 
-![Importance](figures/fig_feature_importance.png)
-*Figure 6. Permutation importance, Ridge.*
+<figure class="narrow"><img src="figures/fig_feature_importance.png"><figcaption>Figure 6. Permutation importance, Ridge.</figcaption></figure>
 
 ### 4.4 Limitations
 - **The data are simulated.** The models learn the simulation's rules, so the high accuracy (R² 0.96) is not evidence of real-world accuracy. Real buildings add effects absent from the file (equipment, weather history, behaviour, faults).
@@ -172,12 +156,17 @@ Ridge coefficients (log scale, for +1 standard deviation of each input): floor a
 Python code in `src/`: `prepare_data.py` (Excel to CSV), `train.py` (training and comparison), `predict.py` (validation and prediction), `monitor.py` (logging). The trained Pipeline (preprocessing plus model) is saved with `joblib` in `models/model.joblib` together with `metadata.json` (feature order, training ranges and medians, categories, results). The dashboard loads the same Pipeline, so the transformations and the feature order are identical to training. Dependencies are in `requirements.txt` and seeds in `src/config.py`.
 
 ### 5.2 Dashboard
-The Streamlit app has a title, short instructions, a form with six number inputs and a building-type drop-down, a Predict button, and a result labelled in kWh/day. A note states that the model is trained on synthetic data and that estimates are not measured values. **[GROUP: insert screenshots of the Predict tab, an out-of-range warning and the Monitoring tab.]**
+The Streamlit dashboard (Figures 7 to 11) has a title banner and two tabs. A sidebar, "About this model", gives the model's accuracy on the held-out buildings and warns that the training data are synthetic. The Predict tab has a form on the left with six number inputs and a building-type drop-down, and a result card on the right. The card shows the predicted energy in kWh/day and the daily energy per m², compared with the typical value of the chosen building type. The screenshots were taken from the deployed app on 28 October 2026.
+
+<div class="grid2">
+<figure><img src="screenshots/01_dashboard_form.png"><figcaption>Figure 7. The dashboard before a prediction.</figcaption></figure>
+<figure><div class="crop"><img src="screenshots/02_result_typical.png"></div><figcaption>Figure 8. Reference building 1 (Retail): 6,838 kWh/day, the same as in the notebook.</figcaption></figure>
+</div>
 
 **Input validation.** Each numeric input has a physical hard limit: area 1–1,000,000 m², occupancy 0–100,000, operating hours 0–24, temperature −40 to 55 °C, COP 1–10, window ratio 0–1. The building type must be one of the four training categories and no field may be empty. Values inside these limits but outside the range seen in training (for example an area above 11,989 m²) are accepted with a warning that the prediction is less reliable. All inputs sit inside one Streamlit form, and the widgets have no limits of their own, so every value reaches our validation function and a clear message is shown.
 
 ### 5.3 Deployment
-The app is deployed from the GitHub repository on Streamlit Community Cloud: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/. After the switch to the new dataset the app was rebooted and loads the new model (checked on 2026-10-28). **[GROUP: add the repository access given to the lecturer.]** A reboot is needed because the running process can keep old modules after a push (we saw an `ImportError` from this).
+The app is deployed from the GitHub repository on Streamlit Community Cloud: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/. After the switch to the new dataset the app was rebooted and loads the new model (checked on 2026-10-28). A reboot is needed because the running process can keep old modules after a push (we saw an `ImportError` from this).
 
 ### 5.4 Testing
 Full log: `docs/test_log.md`. 35 automated `pytest` tests pass.
@@ -186,23 +175,139 @@ Full log: `docs/test_log.md`. 35 automated `pytest` tests pass.
 - **Invalid:** zero or negative area, negative occupancy, 30 operating hours, temperatures of 99 and −80 °C, COP 0.2, window ratio 2, an unknown building type, text instead of a number and blank values are rejected with a clear message, no prediction is shown and nothing is logged.
 - **Missing data and leakage:** the model predicts with blank area and occupancy (median imputation), and its imputer statistics equal the training-split medians.
 - **Problem found and fixed:** in the first deployed version, an invalid entry in the browser left the previous result on screen. We moved the inputs into a form without widget limits.
-- **Deployed app, in a browser (2026-10-28):** reference building 1 gave 6,838 kWh/day, matching the notebook; a zero floor area and a temperature of 99 °C each gave a clear error and no result; a 50,000 m² building gave 33,524 kWh/day with the out-of-range warning; the Monitoring tab counted only the valid predictions and showed the review message when one of three requests was out of range. One first attempt returned a different value because the building type had been typed but not selected, which is a mistake in how we tested, not in the app. **[GROUP: repeat these checks yourselves, with names, dates and screenshots, in `docs/test_log.md`.]**
+- **Deployed app, in a browser (28 October 2026):** the five notebook reference buildings were entered in the live form (table below). A zero floor area and a temperature of 99 °C each gave a clear error and no result (Figure 10). A 50,000 m² building gave 25,160 kWh/day with the out-of-range warning (Figure 9). An earlier manual attempt returned a different value because the building type had been typed but not selected from the list, a mistake in how we tested, not in the app.
+
+| Reference building | Type | Notebook (kWh/day) | Live dashboard (kWh/day) |
+|---|---|---|---|
+| 1 | Retail | 6,837.80 | 6,838 |
+| 2 | School | 336.49 | 336 |
+| 3 | School | 5,389.53 | 5,390 |
+| 4 | Retail | 12,676.13 | 12,676 |
+| 5 | Office | 2,566.35 | 2,566 |
+
+The dashboard rounds to whole kWh, so every difference is rounding only.
+
+<div class="grid2">
+<figure><div class="crop"><img src="screenshots/03_warning_out_of_range.png"></div><figcaption>Figure 9. A 50,000 m² input is outside the training range: a prediction is shown with a warning.</figcaption></figure>
+<figure><div class="crop"><img src="screenshots/04_error_zero_area.png"></div><figcaption>Figure 10. A floor area of 0 is rejected with a clear message and no result.</figcaption></figure>
+</div>
 
 ### 5.5 Monitoring
-Each valid prediction is appended to a log (time, inputs, prediction, list of out-of-range inputs) without personal data. The Monitoring tab shows the number of predictions and the share of requests with inputs outside the training range. **Review trigger:** more than 20% of requests outside the training range, which would suggest that users' buildings differ from the data and the model needs reviewing or retraining. With only a few requests one test input moves this share a lot, so it should be read after a reasonable number of requests. **[GROUP: add observations from the deployed app and keep screenshots, since the free hosting does not keep the log permanently.]** New predictions alone do not show real-world accuracy; that needs measured energy use to compare against.
+Each valid prediction is appended to a log (time, inputs, prediction, list of out-of-range inputs) without personal data; invalid entries are not logged. The Monitoring tab shows the number of predictions, the share of requests with inputs outside the training range, and the latest records (Figure 11). **Review trigger:** more than 20% of requests outside the training range, which would suggest that users' buildings differ from the data and the model needs reviewing or retraining.
+
+In the deployed test session the tab showed 12 logged predictions with 17% out of range (2 of 12). All 12 were our own test requests: the five reference buildings and one 50,000 m² building, run twice. The share is below the 20% trigger, so no review message appeared. With so few requests a single test input moves the share a lot, so the trigger should be read only after a reasonable number of requests. The free hosting does not keep the log permanently, so the screenshot is the lasting record. New predictions alone do not show real-world accuracy; that needs measured energy use to compare against.
+
+<figure class="wide"><img src="screenshots/06_monitoring.png"><figcaption>Figure 11. The Monitoring tab after the test session.</figcaption></figure>
 
 ---
 
 ## 6. Conclusion
 We built and deployed a regression system that predicts a building's daily electricity use from seven inputs, using the course's synthetic dataset of 2,000 buildings. A log-target Ridge regression, chosen by cross-validation on the training data, reached R² 0.960 and a median error of 7.5% on 400 held-out buildings, clearly ahead of a random forest (R² 0.928) and of the mean baseline. Errors are proportional to building size and similar across building types, and the model relies mainly on floor area, operating hours, temperature and building type. Because the data are simulated, the accuracy shows that the model recovers the simulation, not that it would work on real buildings. The most important next step is to validate it on measured data.
 
+<div class="pagebreak"></div>
+
 ## References
 - IFJC4002 course file `04_Building_Energy_Consumption.xlsx` (synthetic teaching data; generation seed 20261432), Faculty of Intelligent Computing, Universiti Malaysia Perlis. Course coordinator: Ir. Dr. Marni Azira Markom.
 - Pedregosa, F., et al. (2011). Scikit-learn: Machine learning in Python. *Journal of Machine Learning Research*, 12, 2825–2830.
 - Streamlit documentation, https://docs.streamlit.io
 
+<div class="pagebreak"></div>
+
 ## Appendices
-- A. Contribution record: `docs/contribution_record.md`
-- B. Prompt record (at least five prompts): `docs/prompt_record.md` **[GROUP]**
-- C. Full test log: `docs/test_log.md`
-- D. Analysis notebook: `notebooks/analysis.ipynb`; figures and numbers: `docs/figures/`; candidate comparison: `docs/figures/cv_exploration.txt`
+
+### Appendix A. Group members
+- Kitthakarn Sawasdipab
+- Narawit Midsalae
+- Arissara Arree
+- Nattawut Kamchoo
+- Phakchira Nunnum
+
+### Appendix B. AI-assisted development record
+**Tool used:** Claude Code (Claude Sonnet 5.5). The prompts below are real messages from the working session, quoted exactly in Thai with an English gloss. The right-hand column lists what was actually checked or corrected in that session.
+
+The project went through two versions. Rows 2–6 and 8 describe the first version, built on the public BDG2 dataset; row 9 is the switch to the
+lecturer-provided dataset, which replaced it. The BDG2 version stays in the Git history.
+
+| # | Stage | Prompt (exact text) | What the AI produced | How it was checked, corrected or adapted |
+|---|---|---|---|---|
+| 1 | Understanding the brief | "อ่านไฟล์และสรุปมา ว่าโปรเจ็คนี้ให้ทำอะไรบ้าง" (Read the file and summarise what the project requires) | A Thai summary of tasks, deliverables and the rubric. The built-in PDF reader returned no text, so the AI extracted it with `pdftotext` | The deliverables list and rubric weights were copied from the extracted text |
+| 2 | Case and dataset choice | "เลือกหัวข้อ 4" (Choose case 4) | A plan for case 4 and three public dataset candidates (BDG2, ASHRAE GEPIII, UCI Appliances) | The AI said the licence and link were unchecked. It then read the file sizes and licence from the BDG2 repository (CC BY-SA 4.0) before asking permission to download |
+| 3 | Project design and code | "เริ่มสร้างโปรเจ็คได้เลย" (Start building the project) | Project layout, `train.py`, `predict.py`, `monitor.py`, `app.py`, tests, document templates | Ran 11 pytest tests and a headless run of the app on **synthetic** demo data. Fixed a deprecated Streamlit argument. |
+| 4 | Data preparation and modelling (BDG2 version) | "ช่วยทำ data set ให้เลย ไม่ต้องรออาจารย์ส่ง data แล้ว" and "อนุญาตให้ดาวน์โหลดทั้ง 3 ไฟล์จาก BDG2 ได้เลย" (Build the dataset; allowed to download the 3 files) | A script turning hourly BDG2 meters into a daily table, then baseline, Ridge and random forest on it | The first forest scored R² ≈ 0 (it memorised buildings through floor area); a log target and large leaves fixed it, and Ridge with a log target blew up (R² −6.3) until floor area was also log-transformed. The AI printed test results at each attempt, so the test set was not untouched in that version. The first data script crashed (a pandas 3 `groupby.apply` dropped a column) and was rewritten |
+| 5 | Testing the dashboard | "commit ได้เลย แล้วทดสอบแอปกับโมเดลจริงด้วย" (Commit, and test the app with the real model) | A headless test of the app with the real model | Five reference cases matched the notebook. The test tool could not submit out-of-limit values, so the AI said this was **not proven**, tested the validator directly, and later checked the deployed app in a browser |
+| 6 | Analysis and report (BDG2 version) | "สร้าง notebook EDA และ error analysis สำหรับรายงาน" and "ร่างรายงานตามโครงใน docs/report_outline.md โดยใช้ตัวเลขจริงจากการเทรน" (Build the EDA / error-analysis notebook; draft the report with real numbers) | An analysis notebook, figures, `results.json` and a report draft | The notebook re-trained the models and asserted that its RMSE matched the saved metadata. The AI cross-checked the draft against `results.json` and corrected four statements |
+| 7 | Deployment | "ขอขั้นตอน" (Ask for the steps) | Steps for pushing to GitHub and deploying on Streamlit Community Cloud | The group followed the steps and obtained the live app. The AI then opened the deployed app and compared its output with the notebook |
+| 8 | Fixing a weakness found in testing | "แก้จุดอ่อนที่ปุ่ม Predict ใช้ค่าเก่าได้เลย" (Fix the Predict button reusing old values) | Inputs moved into `st.form` without widget limits, friendlier error messages, app-level tests | A browser test of the deployed app had shown that an invalid entry left the previous result on screen. The fix was checked with new automated tests and again in a browser on a local server. After the push the deployed app crashed with an `ImportError` because the running process kept an old module; **Reboot app** fixed it |
+| 9 | Switching to the lecturer's dataset | "ใช้ dataset ใหม่" with the file `04_Building_Energy_Consumption.xlsx` (Use the new dataset) | New data loader, seven-feature pipeline, new app form, 35 tests, new analysis notebook and docs | The AI read the file's Guide sheet and followed its instructions (exclude the ID, split before preprocessing). It chose the model settings by cross-validation on the training split only, **before looking at test results**, and saved that comparison in `docs/figures/cv_exploration.txt`. A reference case with a blank floor area was found and replaced. |
+
+**Weaknesses found in the AI's own work** (evidence of checking): the pandas 3 crash, the memorising forest, the unstable Ridge, the Predict button reusing old values, and a reference case that did not test what it claimed to.
+
+### Appendix C. Test log
+#### C.1 Dashboard vs notebook (from `models/reference_cases.csv`, complete test rows)
+Entered through the app form (Streamlit `AppTest`, real saved model):
+
+| # | Inputs (area m², occupancy, hours, °C, COP, window ratio, type) | Notebook prediction | Dashboard prediction | Match? |
+|---|---|---|---|---|
+| 1 | 9634.6, 773, 9.5, 30.6, 4.84, 0.31, Retail | 6837.80 | 6,838 kWh/day | Yes |
+| 2 | 566.4, 33, 9.0, 34.0, 3.48, 0.30, School | 336.49 | 336 kWh/day | Yes |
+| 3 | 11592.7, 545, 7.4, 30.5, 2.87, 0.21, School | 5389.53 | 5,390 kWh/day | Yes |
+| 4 | 11406.9, 312, 11.9, 35.4, 3.21, 0.17, Retail | 12676.13 | 12,676 kWh/day | Yes |
+| 5 | 4700.7, 95, 6.3, 32.7, 3.84, 0.23, Office | 2566.35 | 2,566 kWh/day | Yes |
+
+The dashboard rounds to whole kWh, so differences below 0.5 are rounding only. (An earlier reference set contained a row with a blank floor area,
+which the form cannot take; the training script now picks reference rows with complete data.)
+
+#### C.2 Typical, boundary and invalid inputs
+Automated with `pytest` (35 tests: `tests/test_pipeline.py` for the validation function and `tests/test_app.py` for the app form).
+
+| # | Type | Input | Expected behaviour | Result |
+|---|---|---|---|---|
+| 1 | Typical | default form values (training medians); a 5000 m², 300 people, 10 h building | Prediction in kWh/day, no warning | Pass |
+| 2 | Boundary | each numeric input at its lower and upper hard limit (area 1 and 1,000,000; occupancy 0 and 100,000; hours 0 and 24; temperature −40 and 55; COP 1 and 10; window ratio 0 and 1) | Accepted (limits are inclusive) | Pass (validation function) |
+| 3 | Out of range | area 50,000 m² (training range 258–11,989) | Prediction plus a warning that it is less reliable | Pass (app form) |
+| 4 | Invalid | area 0 or −5 | Clear error, no prediction, nothing logged | Pass (app form) |
+| 5 | Invalid | occupancy −10; hours 30; temperature 99 or −80; COP 0.2; window ratio 2 | Clear error, no prediction | Pass (app form) |
+| 6 | Invalid | unknown building type; blank area; text "hot" for temperature | Rejected with a message | Pass (validation function) |
+| 7 | Missing data | model asked to predict with blank floor area and occupancy (the training data has such rows) | Imputed with training medians, finite prediction | Pass |
+| 8 | Leakage | imputer statistics compared with training-split medians | Equal to the training medians, not the full-data medians | Pass |
+
+Examples of the messages: "Floor area (m²) must be a number between 1 and 1,000,000"; "Outdoor temperature (°C) must be a number between -40 and 55".
+
+**Behaviour at extreme inputs** (Office, other inputs at the training medians; checked by calling the model, not through the browser):
+the model gives 7,980 kWh/day at 12,000 m² and 570,777 kWh/day at 1,000,000 m², which scales roughly with size. At −40 °C it gives only
+111 kWh/day, because the data only cover 23–37 °C and the model scales energy up by about 5% per °C: it cannot represent heating in the cold. These inputs are inside the hard limits, so they are accepted with an
+out-of-range warning, and **the prediction must not be trusted**.
+
+#### C.3 Deployed app, checked in a browser (2026-10-28, current dashboard design)
+A scripted Chrome session (Playwright) filled the live form and pressed Predict. It entered the five reference buildings of section A, then three further cases.
+
+| # | Input | Expected | Actual | Pass? |
+|---|---|---|---|---|
+| C1 | Reference 1: Retail, 9634.6 m² … | 6,838 kWh/day (notebook 6837.80) | 6,838 kWh/day | Pass |
+| C2 | Reference 2: School, 566.4 m² … | 336 (notebook 336.49) | 336 kWh/day | Pass |
+| C3 | Reference 3: School, 11592.7 m² … | 5,390 (notebook 5389.53) | 5,390 kWh/day | Pass |
+| C4 | Reference 4: Retail, 11406.9 m² … | 12,676 (notebook 12676.13) | 12,676 kWh/day | Pass |
+| C5 | Reference 5: Office, 4700.7 m² … | 2,566 (notebook 2566.35) | 2,566 kWh/day | Pass |
+| C6 | Last case with floor area = 50,000 m² (training range 258–11,989) | Prediction plus out-of-range warning | 25,160 kWh/day and "…less reliable: Floor area (m²)." | Pass |
+| C7 | Floor area = 0 | Clear error, no prediction | "Floor area (m²) must be a number between 1 and 1,000,000"; no result card | Pass |
+| C8 | Temperature = 99 °C | Clear error, no prediction | "Outdoor temperature (°C) must be a number between -40 and 55"; no result card | Pass |
+| C9 | Monitoring tab afterwards | Counts valid predictions only | 12 logged, 17% out of range, no review message | Pass |
+
+Screenshots: `01_dashboard_form.png`, `02_result_typical.png`, `03_warning_out_of_range.png`, `04_error_zero_area.png`, `05_error_temperature.png`, `06_monitoring.png`.
+
+**Notes**
+1. The capture script was run twice, so every valid request is in the log twice: 5 reference buildings + 1 out-of-range request, twice = 12 entries, 2 of them out of range (17%). The invalid entries (C7, C8) were not logged, as intended. All 12 are our own test requests.
+2. An earlier manual check on the same day, before the redesign, gave the same reference result for case 1. Its first attempt returned a different value because the text "Retail" had been typed into the building-type box without choosing the option, so the form still held the default (Library). Anyone testing by hand must pick the option from the list.
+3. In the scripted run the entered values do not need Enter: the form sends everything when Predict is pressed.
+
+#### C.4 Monitoring observations
+| Date | Predictions logged | Out-of-range share | Observation / action |
+|---|---|---|---|
+| 2026-10-28 (deployed app, after the checks in C) | 12 | 17% (2 of 12) | Both out-of-range requests were the deliberate 50,000 m² test (run twice). Below the 20% review trigger, so no review message. With so few requests one test input moves the share a lot. |
+
+Review trigger: more than 20% of logged requests have inputs outside the training range. The trigger is only meaningful after a reasonable number of requests.
+The free hosting does not keep the log for ever, so the screenshot is the lasting record. Logged predictions do not show real-world accuracy without measured energy use to compare.
+
+
+### Appendix D. Code and data
+Repository: https://github.com/kitthakarn-sawasdipab/AI-Project. Analysis notebook: `notebooks/analysis.ipynb`; figures and numbers: `docs/figures/`; candidate comparison: `docs/figures/cv_exploration.txt`; dashboard screenshots: `docs/screenshots/`.

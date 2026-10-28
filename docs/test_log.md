@@ -4,8 +4,7 @@ Model under test: Ridge regression (log target) trained on `data/processed/build
 Date of the checks below: 2026-10-28. Run by Claude with automated tools on the **local** app.
 
 > Sections A and B were run on the local app. **Section C was run on the deployed app** (https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/)
-> after the new model was pushed and the app rebooted, through the built-in browser. **The group should repeat the checks
-> in C themselves, add tester names and dates, and attach screenshots.**
+> after the new model and dashboard design were pushed and the app rebooted. Screenshots are in `docs/screenshots/`.
 
 ## A. Dashboard vs notebook (from `models/reference_cases.csv`, complete test rows)
 Entered through the app form (Streamlit `AppTest`, real saved model):
@@ -42,28 +41,32 @@ the model gives 7,980 kWh/day at 12,000 m² and 570,777 kWh/day at 1,000,000 m²
 111 kWh/day, because the data only cover 23–37 °C and the model scales energy up by about 5% per °C: it cannot represent heating in the cold. These inputs are inside the hard limits, so they are accepted with an
 out-of-range warning, and **the prediction must not be trusted**.
 
-## C. Deployed app, checked in a browser (2026-10-28)
-The page loaded the new version: "Model: Ridge regression · trained on 1600 simulated building scenarios (synthetic teaching data)".
+## C. Deployed app, checked in a browser (2026-10-28, current dashboard design)
+A scripted Chrome session (Playwright) filled the live form and pressed Predict. It entered the five reference buildings of section A, then three further cases.
 
-| # | Input (entered in the form, then Predict) | Expected | Actual | Pass? |
+| # | Input | Expected | Actual | Pass? |
 |---|---|---|---|---|
-| C1 | Reference case 1: 9634.6 m², 773 people, 9.5 h, 30.6 °C, COP 4.84, window 0.31, **Retail** | 6,838 kWh/day (notebook 6837.80) | **6,838 kWh/day**, no warning | Pass |
-| C2 | Floor area = 0 | Clear error, no prediction | "Floor area (m²) must be a number between 1 and 1,000,000"; no result shown | Pass |
-| C3 | Temperature = 99 °C | Clear error, no prediction | "Outdoor temperature (°C) must be a number between -40 and 55"; no result shown | Pass |
-| C4 | Floor area = 50,000 m² (training range 258–11,989) | Prediction plus out-of-range warning | 33,524 kWh/day with "…less reliable: Floor area (m²)." | Pass |
-| C5 | Monitoring tab afterwards | Counts the valid predictions only | 3 predictions logged, 33% out of range, and the review-trigger message shown | Pass |
+| C1 | Reference 1: Retail, 9634.6 m² … | 6,838 kWh/day (notebook 6837.80) | 6,838 kWh/day | Pass |
+| C2 | Reference 2: School, 566.4 m² … | 336 (notebook 336.49) | 336 kWh/day | Pass |
+| C3 | Reference 3: School, 11592.7 m² … | 5,390 (notebook 5389.53) | 5,390 kWh/day | Pass |
+| C4 | Reference 4: Retail, 11406.9 m² … | 12,676 (notebook 12676.13) | 12,676 kWh/day | Pass |
+| C5 | Reference 5: Office, 4700.7 m² … | 2,566 (notebook 2566.35) | 2,566 kWh/day | Pass |
+| C6 | Last case with floor area = 50,000 m² (training range 258–11,989) | Prediction plus out-of-range warning | 25,160 kWh/day and "…less reliable: Floor area (m²)." | Pass |
+| C7 | Floor area = 0 | Clear error, no prediction | "Floor area (m²) must be a number between 1 and 1,000,000"; no result card | Pass |
+| C8 | Temperature = 99 °C | Clear error, no prediction | "Outdoor temperature (°C) must be a number between -40 and 55"; no result card | Pass |
+| C9 | Monitoring tab afterwards | Counts valid predictions only | 12 logged, 17% out of range, no review message | Pass |
 
-**Notes on this run**
-1. In C1 the first attempt gave 5,081 kWh/day instead of 6,838. The cause was the test method, not the app: the text "Retail" had been typed into the building-type box but the option had not been chosen, so the form still held the default (Library). After choosing Retail from the list the result matched. Anyone testing by hand should pick the option from the list.
-2. The log holds 3 entries for 3 valid Predict presses (the Library result of 5,081, then C1 and C4). The two invalid presses (C2, C3) were not logged, as intended.
-3. Because most of these test inputs were deliberately unusual, the 33% share is not a sign about real use; it shows that the review trigger works.
-4. Entering values this way does not need Enter: the form sends everything when Predict is pressed.
+Screenshots: `01_dashboard_form.png`, `02_result_typical.png`, `03_warning_out_of_range.png`, `04_error_zero_area.png`, `05_error_temperature.png`, `06_monitoring.png`.
+
+**Notes**
+1. The capture script was run twice, so every valid request is in the log twice: 5 reference buildings + 1 out-of-range request, twice = 12 entries, 2 of them out of range (17%). The invalid entries (C7, C8) were not logged, as intended. All 12 are our own test requests.
+2. An earlier manual check on the same day, before the redesign, gave the same reference result for case 1. Its first attempt returned a different value because the text "Retail" had been typed into the building-type box without choosing the option, so the form still held the default (Library). Anyone testing by hand must pick the option from the list.
+3. In the scripted run the entered values do not need Enter: the form sends everything when Predict is pressed.
 
 ## D. Monitoring observations
 | Date | Predictions logged | Out-of-range share | Observation / action |
 |---|---|---|---|
-| 2026-10-28 (deployed app, after the checks in C) | 3 | 33% (1 of 3) | The one out-of-range request was the deliberate 50,000 m² test. The share is above 20%, so the tab showed the review message. With three requests one test input moves the share a lot. |
-| [GROUP] | | | Add observations from normal use, and take a screenshot, because the free hosting does not keep the log for ever. |
+| 2026-10-28 (deployed app, after the checks in C) | 12 | 17% (2 of 12) | Both out-of-range requests were the deliberate 50,000 m² test (run twice). Below the 20% review trigger, so no review message. With so few requests one test input moves the share a lot. |
 
-Review trigger: more than 20% of logged requests have inputs outside the training range. With very few requests one test input moves the share a lot,
-so the trigger is only meaningful after a reasonable number of requests. Logged predictions do not show real-world accuracy without measured energy use to compare.
+Review trigger: more than 20% of logged requests have inputs outside the training range. The trigger is only meaningful after a reasonable number of requests.
+The free hosting does not keep the log for ever, so the screenshot is the lasting record. Logged predictions do not show real-world accuracy without measured energy use to compare.

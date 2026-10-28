@@ -185,8 +185,8 @@
       "R2": -0.0057,
       "median_abs_pct_error": 50.9735,
       "MAE_pct_of_mean": 54.7897,
-      "fit_seconds": 0.2029,
-      "predict_ms_per_1000": 61.5005,
+      "fit_seconds": 0.2632,
+      "predict_ms_per_1000": 111.8568,
       "cv_RMSE_mean": 3020.0034,
       "cv_RMSE_std": 123.6909
     },
@@ -196,8 +196,8 @@
       "R2": 0.9604,
       "median_abs_pct_error": 7.5161,
       "MAE_pct_of_mean": 9.0391,
-      "fit_seconds": 0.0481,
-      "predict_ms_per_1000": 55.5598,
+      "fit_seconds": 0.067,
+      "predict_ms_per_1000": 59.903,
       "cv_RMSE_mean": 592.7635,
       "cv_RMSE_std": 31.7014
     },
@@ -207,8 +207,8 @@
       "R2": 0.9276,
       "median_abs_pct_error": 9.517,
       "MAE_pct_of_mean": 11.5261,
-      "fit_seconds": 0.9339,
-      "predict_ms_per_1000": 348.8875,
+      "fit_seconds": 1.0199,
+      "predict_ms_per_1000": 339.2827,
       "cv_RMSE_mean": 809.2699,
       "cv_RMSE_std": 85.0031
     }
