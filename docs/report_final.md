@@ -156,7 +156,7 @@ Ridge coefficients (log scale, for +1 standard deviation of each input): floor a
 Python code in `src/`: `prepare_data.py` (Excel to CSV), `train.py` (training and comparison), `predict.py` (validation and prediction), `monitor.py` (logging). The trained Pipeline (preprocessing plus model) is saved with `joblib` in `models/model.joblib` together with `metadata.json` (feature order, training ranges and medians, categories, results). The dashboard loads the same Pipeline, so the transformations and the feature order are identical to training. Dependencies are in `requirements.txt` and seeds in `src/config.py`.
 
 ### 5.2 Dashboard
-The Streamlit dashboard (Figures 7 to 11) has a title banner and two tabs. A sidebar, "About this model", gives the model's accuracy on the held-out buildings and warns that the training data are synthetic. The Predict tab has a form on the left with six number inputs and a building-type drop-down, and a result card on the right. The card shows the predicted energy in kWh/day and the daily energy per m², compared with the typical value of the chosen building type. The screenshots were taken from the deployed app on 28 October 2026.
+The Streamlit dashboard (Figures 7 to 11) has a title banner and two tabs. A sidebar, "About this model", gives the model's accuracy on the held-out buildings and warns that the training data are synthetic. The Predict tab has a form on the left with six number inputs and a building-type drop-down, and a result card on the right. The card shows the predicted energy in kWh/day and the daily energy per m², compared with the typical value of the chosen building type. A header strip shows the logos of Walailak University and Universiti Malaysia Perlis, and a footer lists the five developers. The screenshots were taken from the deployed app on 29 October 2026.
 
 <div class="grid2">
 <figure><img src="screenshots/01_dashboard_form.png"><figcaption>Figure 7. The dashboard before a prediction.</figcaption></figure>
@@ -166,7 +166,7 @@ The Streamlit dashboard (Figures 7 to 11) has a title banner and two tabs. A sid
 **Input validation.** Each numeric input has a physical hard limit: area 1–1,000,000 m², occupancy 0–100,000, operating hours 0–24, temperature −40 to 55 °C, COP 1–10, window ratio 0–1. The building type must be one of the four training categories and no field may be empty. Values inside these limits but outside the range seen in training (for example an area above 11,989 m²) are accepted with a warning that the prediction is less reliable. All inputs sit inside one Streamlit form, and the widgets have no limits of their own, so every value reaches our validation function and a clear message is shown.
 
 ### 5.3 Deployment
-The app is deployed from the GitHub repository on Streamlit Community Cloud: https://building-energy-predict.streamlit.app/. After the switch to the new dataset the app was rebooted and loads the new model (checked on 2026-10-28). A reboot is needed because the running process can keep old modules after a push (we saw an `ImportError` from this).
+The app is deployed from the GitHub repository on Streamlit Community Cloud: https://building-energy-predict.streamlit.app/. After the switch to the new dataset the app was rebooted and loads the new model (checked on 2026-10-29). A reboot is needed because the running process can keep old modules after a push (we saw an `ImportError` from this).
 
 ### 5.4 Testing
 Full log: `docs/test_log.md`. 35 automated `pytest` tests pass.
@@ -175,7 +175,7 @@ Full log: `docs/test_log.md`. 35 automated `pytest` tests pass.
 - **Invalid:** zero or negative area, negative occupancy, 30 operating hours, temperatures of 99 and −80 °C, COP 0.2, window ratio 2, an unknown building type, text instead of a number and blank values are rejected with a clear message, no prediction is shown and nothing is logged.
 - **Missing data and leakage:** the model predicts with blank area and occupancy (median imputation), and its imputer statistics equal the training-split medians.
 - **Problem found and fixed:** in the first deployed version, an invalid entry in the browser left the previous result on screen. We moved the inputs into a form without widget limits.
-- **Deployed app, in a browser (28 October 2026):** the five notebook reference buildings were entered in the live form (table below). A zero floor area and a temperature of 99 °C each gave a clear error and no result (Figure 10). A 50,000 m² building gave 25,160 kWh/day with the out-of-range warning (Figure 9). An earlier manual attempt returned a different value because the building type had been typed but not selected from the list, a mistake in how we tested, not in the app.
+- **Deployed app, in a browser (29 October 2026):** the five notebook reference buildings were entered in the live form (table below). A zero floor area and a temperature of 99 °C each gave a clear error and no result (Figure 10). A 50,000 m² building gave 25,160 kWh/day with the out-of-range warning (Figure 9). An earlier manual attempt returned a different value because the building type had been typed but not selected from the list, a mistake in how we tested, not in the app.
 
 | Reference building | Type | Notebook (kWh/day) | Live dashboard (kWh/day) |
 |---|---|---|---|
@@ -195,7 +195,7 @@ The dashboard rounds to whole kWh, so every difference is rounding only.
 ### 5.5 Monitoring
 Each valid prediction is appended to a log (time, inputs, prediction, list of out-of-range inputs) without personal data; invalid entries are not logged. The Monitoring tab shows the number of predictions, the share of requests with inputs outside the training range, and the latest records (Figure 11). **Review trigger:** more than 20% of requests outside the training range, which would suggest that users' buildings differ from the data and the model needs reviewing or retraining.
 
-In the deployed test session the tab showed 12 logged predictions with 17% out of range (2 of 12). All 12 were our own test requests: the five reference buildings and one 50,000 m² building, run twice. The share is below the 20% trigger, so no review message appeared. With so few requests a single test input moves the share a lot, so the trigger should be read only after a reasonable number of requests. The free hosting does not keep the log permanently, so the screenshot is the lasting record. New predictions alone do not show real-world accuracy; that needs measured energy use to compare against.
+In the deployed test session the tab showed 6 logged predictions with 17% out of range (1 of 6). All 6 were our own test requests: the five reference buildings and one 50,000 m² building. The share is below the 20% trigger, so no review message appeared. With so few requests a single test input moves the share a lot, so the trigger should be read only after a reasonable number of requests. The free hosting does not keep the log permanently, so the screenshot is the lasting record. New predictions alone do not show real-world accuracy; that needs measured energy use to compare against.
 
 <figure class="wide"><img src="screenshots/06_monitoring.png"><figcaption>Figure 11. The Monitoring tab after the test session.</figcaption></figure>
 
@@ -277,7 +277,7 @@ the model gives 7,980 kWh/day at 12,000 m² and 570,777 kWh/day at 1,000,000 m²
 111 kWh/day, because the data only cover 23–37 °C and the model scales energy up by about 5% per °C: it cannot represent heating in the cold. These inputs are inside the hard limits, so they are accepted with an
 out-of-range warning, and **the prediction must not be trusted**.
 
-#### C.3 Deployed app, checked in a browser (2026-10-28, current dashboard design)
+#### C.3 Deployed app, checked in a browser (2026-10-29, current dashboard design)
 A scripted Chrome session (Playwright) filled the live form and pressed Predict. It entered the five reference buildings of section A, then three further cases.
 
 | # | Input | Expected | Actual | Pass? |
@@ -290,19 +290,19 @@ A scripted Chrome session (Playwright) filled the live form and pressed Predict.
 | C6 | Last case with floor area = 50,000 m² (training range 258–11,989) | Prediction plus out-of-range warning | 25,160 kWh/day and "…less reliable: Floor area (m²)." | Pass |
 | C7 | Floor area = 0 | Clear error, no prediction | "Floor area (m²) must be a number between 1 and 1,000,000"; no result card | Pass |
 | C8 | Temperature = 99 °C | Clear error, no prediction | "Outdoor temperature (°C) must be a number between -40 and 55"; no result card | Pass |
-| C9 | Monitoring tab afterwards | Counts valid predictions only | 12 logged, 17% out of range, no review message | Pass |
+| C9 | Monitoring tab afterwards | Counts valid predictions only | 6 logged, 17% out of range, no review message | Pass |
 
 Screenshots: `01_dashboard_form.png`, `02_result_typical.png`, `03_warning_out_of_range.png`, `04_error_zero_area.png`, `05_error_temperature.png`, `06_monitoring.png`.
 
 **Notes**
-1. The capture script was run twice, so every valid request is in the log twice: 5 reference buildings + 1 out-of-range request, twice = 12 entries, 2 of them out of range (17%). The invalid entries (C7, C8) were not logged, as intended. All 12 are our own test requests.
+1. The log holds 6 entries: the 5 reference buildings and 1 out-of-range request, one of them out of range (17%). The invalid entries (C7, C8) were not logged, as intended. All 6 are our own test requests. (The log started empty because the app had just been rebooted.)
 2. An earlier manual check on the same day, before the redesign, gave the same reference result for case 1. Its first attempt returned a different value because the text "Retail" had been typed into the building-type box without choosing the option, so the form still held the default (Library). Anyone testing by hand must pick the option from the list.
 3. In the scripted run the entered values do not need Enter: the form sends everything when Predict is pressed.
 
 #### C.4 Monitoring observations
 | Date | Predictions logged | Out-of-range share | Observation / action |
 |---|---|---|---|
-| 2026-10-28 (deployed app, after the checks in C) | 12 | 17% (2 of 12) | Both out-of-range requests were the deliberate 50,000 m² test (run twice). Below the 20% review trigger, so no review message. With so few requests one test input moves the share a lot. |
+| 2026-10-29 (deployed app, after the checks in C) | 6 | 17% (1 of 6) | The one out-of-range request was the deliberate 50,000 m² test. Below the 20% review trigger, so no review message. With so few requests one test input moves the share a lot. |
 
 Review trigger: more than 20% of logged requests have inputs outside the training range. The trigger is only meaningful after a reasonable number of requests.
 The free hosting does not keep the log for ever, so the screenshot is the lasting record. Logged predictions do not show real-world accuracy without measured energy use to compare.

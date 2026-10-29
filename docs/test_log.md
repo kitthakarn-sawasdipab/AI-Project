@@ -1,7 +1,7 @@
 # Test log
 
 Model under test: Ridge regression (log target) trained on `data/processed/building_energy.csv` (lecturer-provided synthetic data).
-Date of the checks below: 2026-10-28. Run by Claude with automated tools on the **local** app.
+Date of the checks below: 2026-10-28 (sections A and B) and 2026-10-29 (section C). Run by Claude with automated tools on the **local** app.
 
 > Sections A and B were run on the local app. **Section C was run on the deployed app** (https://building-energy-predict.streamlit.app/)
 > after the new model and dashboard design were pushed and the app rebooted. Screenshots are in `docs/screenshots/`.
@@ -41,7 +41,7 @@ the model gives 7,980 kWh/day at 12,000 m² and 570,777 kWh/day at 1,000,000 m²
 111 kWh/day, because the data only cover 23–37 °C and the model scales energy up by about 5% per °C: it cannot represent heating in the cold. These inputs are inside the hard limits, so they are accepted with an
 out-of-range warning, and **the prediction must not be trusted**.
 
-## C. Deployed app, checked in a browser (2026-10-28, current dashboard design)
+## C. Deployed app, checked in a browser (2026-10-29, current dashboard design)
 A scripted Chrome session (Playwright) filled the live form and pressed Predict. It entered the five reference buildings of section A, then three further cases.
 
 | # | Input | Expected | Actual | Pass? |
@@ -54,19 +54,19 @@ A scripted Chrome session (Playwright) filled the live form and pressed Predict.
 | C6 | Last case with floor area = 50,000 m² (training range 258–11,989) | Prediction plus out-of-range warning | 25,160 kWh/day and "…less reliable: Floor area (m²)." | Pass |
 | C7 | Floor area = 0 | Clear error, no prediction | "Floor area (m²) must be a number between 1 and 1,000,000"; no result card | Pass |
 | C8 | Temperature = 99 °C | Clear error, no prediction | "Outdoor temperature (°C) must be a number between -40 and 55"; no result card | Pass |
-| C9 | Monitoring tab afterwards | Counts valid predictions only | 12 logged, 17% out of range, no review message | Pass |
+| C9 | Monitoring tab afterwards | Counts valid predictions only | 6 logged, 17% out of range, no review message | Pass |
 
 Screenshots: `01_dashboard_form.png`, `02_result_typical.png`, `03_warning_out_of_range.png`, `04_error_zero_area.png`, `05_error_temperature.png`, `06_monitoring.png`.
 
 **Notes**
-1. The capture script was run twice, so every valid request is in the log twice: 5 reference buildings + 1 out-of-range request, twice = 12 entries, 2 of them out of range (17%). The invalid entries (C7, C8) were not logged, as intended. All 12 are our own test requests.
+1. The log holds 6 entries: the 5 reference buildings and 1 out-of-range request, one of them out of range (17%). The invalid entries (C7, C8) were not logged, as intended. All 6 are our own test requests. (The log started empty because the app had just been rebooted.)
 2. An earlier manual check on the same day, before the redesign, gave the same reference result for case 1. Its first attempt returned a different value because the text "Retail" had been typed into the building-type box without choosing the option, so the form still held the default (Library). Anyone testing by hand must pick the option from the list.
 3. In the scripted run the entered values do not need Enter: the form sends everything when Predict is pressed.
 
 ## D. Monitoring observations
 | Date | Predictions logged | Out-of-range share | Observation / action |
 |---|---|---|---|
-| 2026-10-28 (deployed app, after the checks in C) | 12 | 17% (2 of 12) | Both out-of-range requests were the deliberate 50,000 m² test (run twice). Below the 20% review trigger, so no review message. With so few requests one test input moves the share a lot. |
+| 2026-10-29 (deployed app, after the checks in C) | 6 | 17% (1 of 6) | The one out-of-range request was the deliberate 50,000 m² test. Below the 20% review trigger, so no review message. With so few requests one test input moves the share a lot. |
 
 Review trigger: more than 20% of logged requests have inputs outside the training range. The trigger is only meaningful after a reasonable number of requests.
 The free hosting does not keep the log for ever, so the screenshot is the lasting record. Logged predictions do not show real-world accuracy without measured energy use to compare.

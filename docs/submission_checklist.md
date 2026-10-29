@@ -1,6 +1,6 @@
 # Submission checklist (IFJC4002, Case 4)
 
-Status on 2026-10-28. "Done" means it exists in the repository; items in the last section need the group.
+Status on 2026-10-29. "Done" means it exists in the repository; items in the last section need the group.
 
 ## Done
 - [x] Report PDF: `docs/report.pdf` (cover, 8 pages of main text, references, appendices). Source: `docs/report_final.md`; rebuild with `python docs/build_report.py`.

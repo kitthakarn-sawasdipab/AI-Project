@@ -75,7 +75,7 @@ body {{ font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; color: #
   <p>Live application: <a href="{APP}">{APP}</a></p>
   <p>GitHub repository: <a href="{REPO}">{REPO}</a></p>
   <h3>Date</h3>
-  <p>28 October 2026</p>
+  <p>29 October 2026</p>
   <p class="small" style="margin-top:40px">The data used are the course's synthetic teaching data. Accuracy figures show how well the models recover the simulation, not performance on real buildings.</p>
 </div></body></html>
 """
