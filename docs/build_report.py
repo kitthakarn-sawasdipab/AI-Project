@@ -19,7 +19,7 @@ REPO = "https://github.com/kitthakarn-sawasdipab/AI-Project"
 CSS = """
 @page { size: A4; }
 * { box-sizing: border-box; }
-body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; font-size: 10pt; line-height: 1.45; color: #0F172A; margin: 0; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #0F172A; margin: 0; }
 h1, h2, h3, h4 { color: #0F766E; line-height: 1.25; }
 h2 { font-size: 15pt; margin: 20px 0 6px; padding-bottom: 3px; border-bottom: 2px solid #CFE3E0; page-break-after: avoid; }
 h3 { font-size: 11.5pt; margin: 14px 0 4px; page-break-after: avoid; }
@@ -30,7 +30,7 @@ li { margin: 2px 0; }
 code { font-family: Consolas, monospace; font-size: 8.8pt; background: #EEF2F7; padding: 0 3px; border-radius: 3px; }
 blockquote { margin: 8px 0; padding: 6px 12px; background: #EAF4F2; border-left: 4px solid #0F766E; }
 blockquote p { margin: 2px 0; }
-table { border-collapse: collapse; width: 100%; margin: 7px 0; font-size: 8.6pt; page-break-inside: auto; }
+table { border-collapse: collapse; width: 100%; margin: 9px 0; font-size: 9.4pt; page-break-inside: auto; }
 th { background: #0F766E; color: white; text-align: left; padding: 4px 6px; }
 td { padding: 3px 6px; border-bottom: 1px solid #D5E0E8; vertical-align: top; }
 tr { page-break-inside: avoid; }
@@ -81,7 +81,7 @@ body {{ font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; color: #
 """
 
 FOOTER = """
-<div style="font-size:8px; width:100%; padding:0 18mm; color:#64748B; display:flex; justify-content:space-between;">
+<div style="font-size:8px; width:100%; padding:0 20mm; color:#64748B; display:flex; justify-content:space-between;">
   <span>IFJC4002 · Case 4 · Building energy consumption prediction</span>
   <span>Page <span class="pageNumber"></span> of <span class="totalPages"></span></span>
 </div>
@@ -106,7 +106,7 @@ def main() -> None:
         pg.goto(body_html.as_uri()); pg.wait_for_timeout(1500)
         pg.pdf(path=str(DOCS / "_body.pdf"), format="A4", print_background=True, display_header_footer=True,
                header_template="<div></div>", footer_template=FOOTER,
-               margin=dict(top="17mm", bottom="18mm", left="18mm", right="18mm"))
+               margin=dict(top="18mm", bottom="19mm", left="20mm", right="20mm"))
         b.close()
 
     out = fitz.open()
