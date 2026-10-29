@@ -3,7 +3,7 @@
 Model under test: Ridge regression (log target) trained on `data/processed/building_energy.csv` (lecturer-provided synthetic data).
 Date of the checks below: 2026-10-28. Run by Claude with automated tools on the **local** app.
 
-> Sections A and B were run on the local app. **Section C was run on the deployed app** (https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/)
+> Sections A and B were run on the local app. **Section C was run on the deployed app** (https://building-energy-predict.streamlit.app/)
 > after the new model and dashboard design were pushed and the app rebooted. Screenshots are in `docs/screenshots/`.
 
 ## A. Dashboard vs notebook (from `models/reference_cases.csv`, complete test rows)

@@ -1,9 +1,36 @@
+import base64
+from pathlib import Path
+
 import streamlit as st
 
 from src import config, monitor
 from src.predict import HARD_LIMITS, LABELS, load_artifacts, predict_one, validate_inputs
 
 st.set_page_config(page_title="Building Energy Predictor", page_icon="⚡", layout="wide")
+
+ASSETS = Path(__file__).resolve().parent / "assets"
+
+
+@st.cache_data
+def logo_uri(name: str) -> str:
+    return "data:image/png;base64," + base64.b64encode((ASSETS / name).read_bytes()).decode()
+
+
+st.markdown(
+    f"""
+    <style>
+    .brand {{display: flex; align-items: center; gap: 22px; margin: 0 0 .8rem 0;}}
+    .brand img {{width: auto; margin: 0;}}
+    .brand .sep {{width: 1px; height: 64px; background: #CBD5E1;}}
+    </style>
+    <div class="brand">
+      <img src="{logo_uri('walailak_logo.png')}" alt="Walailak University" style="height: 96px;">
+      <div class="sep"></div>
+      <img src="{logo_uri('unimap_logo.png')}" alt="Universiti Malaysia Perlis" style="height: 74px;">
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 st.markdown(
     """

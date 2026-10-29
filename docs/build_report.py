@@ -13,7 +13,7 @@ from playwright.sync_api import sync_playwright
 DOCS = Path(__file__).resolve().parent
 TITLE = "Predicting Daily Building Energy Use with Machine Learning"
 MEMBERS = ["Kitthakarn Sawasdipab", "Narawit Midsalae", "Arissara Arree", "Nattawut Kamchoo", "Phakchira Nunnum"]
-APP = "https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/"
+APP = "https://building-energy-predict.streamlit.app/"
 REPO = "https://github.com/kitthakarn-sawasdipab/AI-Project"
 
 CSS = """

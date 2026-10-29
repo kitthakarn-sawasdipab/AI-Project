@@ -52,7 +52,7 @@ Pipeline, so the dashboard applies the same transformations and feature order as
 ## Deploy (Streamlit Community Cloud)
 1. Push this folder to a GitHub repository, including `models/` (commit after training).
 2. On share.streamlit.io choose the repository, branch `main`, main file `app.py`.
-3. Live app: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/
+3. Live app: https://building-energy-predict.streamlit.app/
 4. After pushing changes to files in `src/`, use **Manage app → Reboot app**, otherwise the running process can keep old modules.
 5. Give the lecturer access to the repository if it is private.
 

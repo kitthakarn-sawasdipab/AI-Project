@@ -166,7 +166,7 @@ The Streamlit dashboard (Figures 7 to 11) has a title banner and two tabs. A sid
 **Input validation.** Each numeric input has a physical hard limit: area 1–1,000,000 m², occupancy 0–100,000, operating hours 0–24, temperature −40 to 55 °C, COP 1–10, window ratio 0–1. The building type must be one of the four training categories and no field may be empty. Values inside these limits but outside the range seen in training (for example an area above 11,989 m²) are accepted with a warning that the prediction is less reliable. All inputs sit inside one Streamlit form, and the widgets have no limits of their own, so every value reaches our validation function and a clear message is shown.
 
 ### 5.3 Deployment
-The app is deployed from the GitHub repository on Streamlit Community Cloud: https://ai-project-awvytzqc3vsqxywkv6yesy.streamlit.app/. After the switch to the new dataset the app was rebooted and loads the new model (checked on 2026-10-28). A reboot is needed because the running process can keep old modules after a push (we saw an `ImportError` from this).
+The app is deployed from the GitHub repository on Streamlit Community Cloud: https://building-energy-predict.streamlit.app/. After the switch to the new dataset the app was rebooted and loads the new model (checked on 2026-10-28). A reboot is needed because the running process can keep old modules after a push (we saw an `ImportError` from this).
 
 ### 5.4 Testing
 Full log: `docs/test_log.md`. 35 automated `pytest` tests pass.
