@@ -160,7 +160,7 @@ The Streamlit dashboard (Figures 7 to 11) has a title banner and two tabs. A sid
 
 <div class="grid2">
 <figure><img src="screenshots/01_dashboard_form.png"><figcaption>Figure 7. The dashboard before a prediction.</figcaption></figure>
-<figure><div class="crop"><img src="screenshots/02_result_typical.png"></div><figcaption>Figure 8. Reference building 1 (Retail): 6,838 kWh/day, the same as in the notebook.</figcaption></figure>
+<figure><img src="screenshots/02_result_typical.png"><figcaption>Figure 8. Reference building 1 (Retail): 6,838 kWh/day, the same as in the notebook.</figcaption></figure>
 </div>
 
 **Input validation.** Each numeric input has a physical hard limit: area 1–1,000,000 m², occupancy 0–100,000, operating hours 0–24, temperature −40 to 55 °C, COP 1–10, window ratio 0–1. The building type must be one of the four training categories and no field may be empty. Values inside these limits but outside the range seen in training (for example an area above 11,989 m²) are accepted with a warning that the prediction is less reliable. All inputs sit inside one Streamlit form, and the widgets have no limits of their own, so every value reaches our validation function and a clear message is shown.
@@ -188,8 +188,8 @@ Full log: `docs/test_log.md`. 35 automated `pytest` tests pass.
 The dashboard rounds to whole kWh, so every difference is rounding only.
 
 <div class="grid2">
-<figure><div class="crop"><img src="screenshots/03_warning_out_of_range.png"></div><figcaption>Figure 9. A 50,000 m² input is outside the training range: a prediction is shown with a warning.</figcaption></figure>
-<figure><div class="crop"><img src="screenshots/04_error_zero_area.png"></div><figcaption>Figure 10. A floor area of 0 is rejected with a clear message and no result.</figcaption></figure>
+<figure><img src="screenshots/03_warning_out_of_range.png"><figcaption>Figure 9. A 50,000 m² input is outside the training range: a prediction is shown with a warning.</figcaption></figure>
+<figure><img src="screenshots/04_error_zero_area.png"><figcaption>Figure 10. A floor area of 0 is rejected with a clear message and no result.</figcaption></figure>
 </div>
 
 ### 5.5 Monitoring

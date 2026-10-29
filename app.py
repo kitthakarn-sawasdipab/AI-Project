@@ -9,6 +9,13 @@ from src.predict import HARD_LIMITS, LABELS, load_artifacts, predict_one, valida
 st.set_page_config(page_title="Building Energy Predictor", page_icon="⚡", layout="wide")
 
 ASSETS = Path(__file__).resolve().parent / "assets"
+MEMBERS = [
+    "Kitthakarn Sawasdipab",
+    "Narawit Midsalae",
+    "Arissara Arree",
+    "Nattawut Kamchoo",
+    "Phakchira Nunnum",
+]
 
 
 @st.cache_data
@@ -22,11 +29,15 @@ st.markdown(
     .brand {{display: flex; align-items: center; gap: 22px; margin: 0 0 .8rem 0;}}
     .brand img {{width: auto; margin: 0;}}
     .brand .sep {{width: 1px; height: 64px; background: #CBD5E1;}}
+    .credits {{margin: 2.2rem 0 .5rem 0; padding: 1rem 1.2rem; border-top: 2px solid #CFE3E0; text-align: center; color: #334155;}}
+    .credits .label {{font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; color: #0F766E; font-weight: 700;}}
+    .credits .names {{font-size: 1.02rem; font-weight: 600; margin: .3rem 0 .25rem 0; line-height: 1.7;}}
+    .credits .course {{font-size: .82rem; color: #64748B;}}
     </style>
     <div class="brand">
-      <img src="{logo_uri('walailak_logo.png')}" alt="Walailak University" style="height: 96px;">
+      <img src="{logo_uri('walailak_logo.png')}" alt="Walailak University" style="height: 88px;">
       <div class="sep"></div>
-      <img src="{logo_uri('unimap_logo.png')}" alt="Universiti Malaysia Perlis" style="height: 74px;">
+      <img src="{logo_uri('unimap_logo.png')}" alt="Universiti Malaysia Perlis" style="height: 88px;">
     </div>
     """,
     unsafe_allow_html=True,
@@ -151,3 +162,15 @@ with monitor_tab:
     st.caption("Logged predictions alone do not show real-world accuracy; that needs measured outcomes.")
     if not log.empty:
         st.dataframe(log.tail(50), width="stretch")
+
+st.markdown(
+    f"""
+    <div class="credits">
+      <div class="label">Developed by</div>
+      <div class="names">{" &nbsp;·&nbsp; ".join(MEMBERS)}</div>
+      <div class="course">IFJC4002 Practical Artificial Intelligence with Python ·
+      Faculty of Intelligent Computing, Universiti Malaysia Perlis</div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)

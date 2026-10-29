@@ -3,10 +3,12 @@
 Needs: pip install markdown playwright pymupdf   (uses the installed Chrome, no browser download)
 Usage: python docs/build_report.py
 """
+import os
 import re
 from pathlib import Path
 
 import fitz  # PyMuPDF
+from PIL import Image
 import markdown
 from playwright.sync_api import sync_playwright
 
@@ -41,8 +43,6 @@ figcaption { font-size: 8.4pt; color: #475569; font-style: italic; text-align: c
 .grid2 { display: flex; gap: 12px; align-items: flex-start; margin: 8px 0; page-break-inside: avoid; }
 .grid2 figure { flex: 1 1 0; margin: 0; }
 figure.wide img { width: 88%; }
-.crop { overflow: hidden; position: relative; width: 100%; aspect-ratio: 1470 / 1090; border: 1px solid #D5E0E8; border-radius: 6px; }
-.crop img { position: absolute; width: 130.6%; max-width: none; left: -30.6%; top: -9.2%; margin: 0; }
 figure.narrow img { width: 62%; }
 .pagebreak { page-break-after: always; }
 a { color: #1D4ED8; text-decoration: none; }
@@ -88,11 +88,41 @@ FOOTER = """
 """
 
 
+BG = (248, 250, 252)        # page background of the dashboard
+RULE = (207, 227, 224)      # teal rule above the credits
+FULL_VIEW = {"01_dashboard_form.png", "06_monitoring.png"}   # keep the sidebar in these
+
+
+def _near(c, ref, tol=8):
+    return all(abs(a - b) <= tol for a, b in zip(c, ref))
+
+
+def prepare_shots() -> Path:
+    """Crop the dashboard screenshots for the report: drop the sidebar (except in full views),
+    cut above the credits block (except in full views) and trim empty space at the bottom."""
+    out = DOCS / "_shots"; out.mkdir(exist_ok=True)
+    for f in sorted(Path(os.environ.get("REPORT_SHOTS", DOCS / "screenshots")).glob("0*.png")):
+        im = Image.open(f).convert("RGB"); w, h = im.size
+        side = next((x for x in range(w) if im.getpixel((x, 60)) == BG), 0)   # sidebar width in pixels
+        probe = min(side + 300, w - 1)
+        rule_y = next((y for y in range(h - 1, 250, -1) if _near(im.getpixel((probe, y)), RULE, 3)), None)   # last teal rule = start of the credits
+        if f.name in FULL_VIEW:
+            left = 0
+            content_bottom = max((y for y in range(h) if any(not _near(im.getpixel((x, y)), BG, 3) for x in range(side + 60, w - 60, 40))), default=h)
+            bottom = min(content_bottom + 40, h)
+        else:
+            left = side
+            bottom = (rule_y - 24) if rule_y else h
+        im.crop((left, 0, w, bottom)).save(out / f.name, optimize=True)
+    return out
+
+
 def main() -> None:
     md = (DOCS / "report_final.md").read_text(encoding="utf-8")
     # Python-Markdown needs a blank line before a list that follows a paragraph line
     md = re.sub(r"(?m)^(?![ \t]*(?:[-*] |\d+\. |\||<|>|#))(.+)\n(?=(?:[-*] |\d+\. ))", r"\1\n\n", md)
-    html = markdown.markdown(md, extensions=["extra", "sane_lists"])
+    shots = prepare_shots()
+    html = markdown.markdown(md, extensions=["extra", "sane_lists"]).replace("screenshots/", "_shots/")
     body_html = DOCS / "_report_body.html"
     body_html.write_text(f'<html><head><meta charset="utf-8"><style>{CSS}</style></head><body>{html}</body></html>', encoding="utf-8")
     cover_html = DOCS / "_report_cover.html"
@@ -113,10 +143,14 @@ def main() -> None:
     for name in ("_cover.pdf", "_body.pdf"):
         part = fitz.open(DOCS / name); out.insert_pdf(part); part.close()
     out.set_metadata({"title": TITLE, "author": ", ".join(MEMBERS), "subject": "IFJC4002 Case 4"})
-    out.save(DOCS / "report.pdf", garbage=4, deflate=True)
-    print("pages:", len(out), "| size KB:", round((DOCS / "report.pdf").stat().st_size / 1024))
+    pdf_path = Path(os.environ.get("REPORT_PDF", DOCS / "report.pdf"))
+    out.save(pdf_path, garbage=4, deflate=True)
+    print("pages:", len(out), "| size KB:", round(pdf_path.stat().st_size / 1024))
     for f in ("_report_body.html", "_report_cover.html", "_cover.pdf", "_body.pdf"):
         (DOCS / f).unlink()
+    for f in shots.glob("*.png"):
+        f.unlink()
+    shots.rmdir()
 
 
 if __name__ == "__main__":

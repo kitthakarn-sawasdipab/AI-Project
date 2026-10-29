@@ -28,7 +28,8 @@ notebooks/cv_explore.py   cross-validation comparison of candidate settings (tra
 tests/                 pytest checks (pipeline, validation, and the app form)
 data/                  see data/README.md
 docs/                  report (report_final.md, built into report.pdf by build_report.py), outline, test log,
-                       contribution and prompt records, figures and dashboard screenshots
+                       contribution and prompt records, figures; screenshots/ is made by capture_screenshots.py
+assets/                university logos shown in the dashboard header
 models/                created by training: model.joblib, metadata.json, reference_cases.csv
 ```
 
